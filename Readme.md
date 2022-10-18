@@ -1,7 +1,7 @@
 # Личный проект «Шесть городов»
 
 * Студент: [Oleh Parkhomenko](https://up.htmlacademy.ru/react/11/user/635705).
-* Наставник: `Неизвестно`.
+* Наставник: [Фёдор Громов](https://htmlacademy.ru/profile/ted_gromov).
 
 ---
 
