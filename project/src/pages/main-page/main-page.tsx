@@ -1,6 +1,10 @@
 import PlaceCard from '../../components/place-card/place-card';
 
-function MainPage(): JSX.Element {
+type MainPageProps = {
+  rentalsNum: number;
+}
+
+function MainPage({ rentalsNum }: MainPageProps): JSX.Element {
   return (
     <div className="page page--gray page--main">
       <header className="header">
@@ -91,11 +95,7 @@ function MainPage(): JSX.Element {
                 </ul>
               </form>
               <div className="cities__places-list places__list tabs__content">
-                <PlaceCard />
-                <PlaceCard />
-                <PlaceCard />
-                <PlaceCard />
-                <PlaceCard />
+                {new Array(rentalsNum).fill('').map((card) => <PlaceCard key={`${card as string}`} />)}
               </div>
             </section>
             <div className="cities__right-section">
