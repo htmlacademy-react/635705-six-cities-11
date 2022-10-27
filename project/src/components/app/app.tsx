@@ -1,3 +1,4 @@
+import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import MainPage from '../../pages/main-page/main-page';
 
 type AppProps = {
@@ -6,7 +7,14 @@ type AppProps = {
 
 function App({ rentalsNum }: AppProps): JSX.Element {
   return (
-    <MainPage rentalsNum={rentalsNum} />
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path='/'
+          element={<MainPage rentalsNum={rentalsNum} />}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
