@@ -4,13 +4,15 @@ import LoginPage from '../../pages/login-page/login-page';
 import FavoritesPage from '../../pages/favorites-page/favorites-page';
 import OfferPage from '../../pages/offer-page/offer-page';
 import NotFoundPage from '../../pages/not-found-page/not-found-page';
+import PrivateRoute from '../private-route/private-route';
 import { AppRoute } from '../../const';
 
 type AppProps = {
   rentalsNum: number;
+  isAuthorized: boolean;
 }
 
-function App({ rentalsNum }: AppProps): JSX.Element {
+function App({ rentalsNum, isAuthorized }: AppProps): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
@@ -24,7 +26,11 @@ function App({ rentalsNum }: AppProps): JSX.Element {
         />
         <Route
           path={AppRoute.Favorites}
-          element={<FavoritesPage />}
+          element={
+            <PrivateRoute isAuthorized={isAuthorized}>
+              <FavoritesPage />
+            </PrivateRoute>
+          }
         />
         <Route path={AppRoute.Room}>
           <Route

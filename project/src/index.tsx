@@ -4,6 +4,7 @@ import App from './components/app/app';
 
 const Setting = {
   RentalsNum: 5,
+  IsAuthorized: false,
 } as const;
 
 const root = ReactDOM.createRoot(
@@ -12,6 +13,9 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <App rentalsNum={Setting.RentalsNum} />
+    <App
+      rentalsNum={Setting.RentalsNum}
+      isAuthorized={Setting.IsAuthorized}
+    />
   </React.StrictMode>,
 );
