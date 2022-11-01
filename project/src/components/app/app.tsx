@@ -6,13 +6,15 @@ import OfferPage from '../../pages/offer-page/offer-page';
 import NotFoundPage from '../../pages/not-found-page/not-found-page';
 import PrivateRoute from '../private-route/private-route';
 import { AppRoute } from '../../const';
+import { Hotel } from '../../types/hotel';
 
 type AppProps = {
   rentalsNum: number;
   isAuthorized: boolean;
+  offers: Hotel[];
 }
 
-function App({ rentalsNum, isAuthorized }: AppProps): JSX.Element {
+function App({ rentalsNum, isAuthorized, offers }: AppProps): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
