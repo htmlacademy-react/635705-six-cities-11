@@ -9,18 +9,17 @@ import { AppRoute } from '../../const';
 import { Hotel } from '../../types/hotel';
 
 type AppProps = {
-  rentalsNum: number;
   isAuthorized: boolean;
   offers: Hotel[];
 }
 
-function App({ rentalsNum, isAuthorized, offers }: AppProps): JSX.Element {
+function App({ isAuthorized, offers }: AppProps): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path={AppRoute.Main}
-          element={<MainPage rentalsNum={rentalsNum} />}
+          element={<MainPage offers={offers} />}
         />
         <Route
           path={AppRoute.Login}

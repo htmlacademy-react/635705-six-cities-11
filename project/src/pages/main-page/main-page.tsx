@@ -1,10 +1,11 @@
-import PlaceCard from '../../components/place-card/place-card';
+import PlacesList from '../../components/places-list/places-list';
+import { Hotel } from '../../types/hotel';
 
 type MainPageProps = {
-  rentalsNum: number;
+  offers: Hotel[];
 }
 
-function MainPage({ rentalsNum }: MainPageProps): JSX.Element {
+function MainPage({ offers }: MainPageProps): JSX.Element {
   return (
     <div className="page page--gray page--main">
       <header className="header">
@@ -94,9 +95,7 @@ function MainPage({ rentalsNum }: MainPageProps): JSX.Element {
                   <li className="places__option" tabIndex={0}>Top rated first</li>
                 </ul>
               </form>
-              <div className="cities__places-list places__list tabs__content">
-                {new Array(rentalsNum).fill('').map((card) => <PlaceCard key={`${card as string}`} />)}
-              </div>
+              <PlacesList offers={offers} />
             </section>
             <div className="cities__right-section">
               <section className="cities__map map"></section>
