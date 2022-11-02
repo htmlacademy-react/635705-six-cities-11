@@ -1,3 +1,4 @@
+import { HTMLAttributes } from 'react';
 import Mark from '../mark/mark';
 import Bookmark from '../bookmark/bookmark';
 import { Hotel } from '../../types/hotel';
@@ -5,12 +6,16 @@ import { getRating } from '../../utils';
 
 type PlaceCardProps = {
   offer: Hotel;
-}
+} & HTMLAttributes<HTMLTitleElement>
 
-function PlaceCard({ offer }: PlaceCardProps): JSX.Element {
+function PlaceCard({ offer, onMouseEnter, onMouseLeave }: PlaceCardProps): JSX.Element {
   const { isPremium, previewImage, title, price, isFavorite, rating, type } = offer;
   return (
-    <article className="cities__card place-card">
+    <article
+      className="cities__card place-card"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       {isPremium && <Mark />}
       <div className="cities__image-wrapper place-card__image-wrapper">
         <a href="/#">

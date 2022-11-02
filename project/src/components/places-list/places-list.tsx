@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import PlaceCard from '../../components/place-card/place-card';
 import { Hotel } from '../../types/hotel';
 
@@ -6,9 +7,20 @@ type PlacesListProps = {
 }
 
 function PlacesList({ offers }: PlacesListProps): JSX.Element {
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [activeCard, setActiveCard] = useState(0);
+
   return (
     <div className="cities__places-list places__list tabs__content">
-      {offers && offers.map((offer) => <PlaceCard offer={offer} key={`${offer.id}`} />)}
+      {offers && offers.map((offer) => (
+        <PlaceCard
+          offer={offer}
+          key={`${offer.id}`}
+          onMouseEnter={() => setActiveCard(offer.id)}
+          onMouseLeave={() => setActiveCard(0)}
+        />
+      ))}
     </div>
   );
 }
