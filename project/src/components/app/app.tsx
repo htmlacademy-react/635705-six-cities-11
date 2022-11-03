@@ -29,7 +29,7 @@ function App({ isAuthorized, offers }: AppProps): JSX.Element {
           path={AppRoute.Favorites}
           element={
             <PrivateRoute isAuthorized={isAuthorized}>
-              <FavoritesPage />
+              <FavoritesPage offers={offers} />
             </PrivateRoute>
           }
         />
