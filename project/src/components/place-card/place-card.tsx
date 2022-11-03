@@ -1,4 +1,4 @@
-import { HTMLAttributes } from 'react';
+import { MouseEventHandler } from 'react';
 import { Link } from 'react-router-dom';
 import Mark from '../mark/mark';
 import Bookmark from '../bookmark/bookmark';
@@ -8,7 +8,9 @@ import { AppRoute } from '../../const';
 
 type PlaceCardProps = {
   offer: Hotel;
-} & HTMLAttributes<HTMLTitleElement>
+  onMouseEnter: MouseEventHandler<HTMLElement>;
+  onMouseLeave: MouseEventHandler<HTMLElement>;
+}
 
 function PlaceCard({ offer, onMouseEnter, onMouseLeave }: PlaceCardProps): JSX.Element {
   const { id, isPremium, previewImage, title, price, isFavorite, rating, type } = offer;
