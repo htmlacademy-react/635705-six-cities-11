@@ -36,7 +36,7 @@ function App({ isAuthorized, offers }: AppProps): JSX.Element {
         <Route path={AppRoute.Room}>
           <Route
             path=':id'
-            element={<OfferPage />}
+            element={<OfferPage offers={offers} />}
           />
         </Route>
         <Route

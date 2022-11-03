@@ -1,15 +1,17 @@
 import { HTMLAttributes } from 'react';
+import { Link } from 'react-router-dom';
 import Mark from '../mark/mark';
 import Bookmark from '../bookmark/bookmark';
 import { Hotel } from '../../types/hotel';
 import { getRating } from '../../utils';
+import { AppRoute } from '../../const';
 
 type PlaceCardProps = {
   offer: Hotel;
 } & HTMLAttributes<HTMLTitleElement>
 
 function PlaceCard({ offer, onMouseEnter, onMouseLeave }: PlaceCardProps): JSX.Element {
-  const { isPremium, previewImage, title, price, isFavorite, rating, type } = offer;
+  const { id, isPremium, previewImage, title, price, isFavorite, rating, type } = offer;
   return (
     <article
       className="cities__card place-card"
@@ -18,9 +20,9 @@ function PlaceCard({ offer, onMouseEnter, onMouseLeave }: PlaceCardProps): JSX.E
     >
       {isPremium && <Mark />}
       <div className="cities__image-wrapper place-card__image-wrapper">
-        <a href="/#">
+        <Link to={`${AppRoute.Room}/${id}`}>
           <img className="place-card__image" src={previewImage} width="260" height="200" alt={title} />
-        </a>
+        </Link>
       </div>
       <div className="place-card__info">
         <div className="place-card__price-wrapper">
@@ -37,7 +39,7 @@ function PlaceCard({ offer, onMouseEnter, onMouseLeave }: PlaceCardProps): JSX.E
           </div>
         </div>
         <h2 className="place-card__name">
-          <a href="/#">{title}</a>
+          <Link to={`${AppRoute.Room}/${id}`}>{title}</Link>
         </h2>
         <p className="place-card__type">{type}</p>
       </div>
