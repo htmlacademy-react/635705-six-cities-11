@@ -1,6 +1,6 @@
 import { MAX_RATING } from './const';
 
-export const getRating = (rating: number | undefined) => {
+export const getRating = (rating?: number) => {
   if (rating === undefined) {
     return 0;
   }
@@ -8,7 +8,7 @@ export const getRating = (rating: number | undefined) => {
   return (Math.round(rating) / MAX_RATING) * 100;
 };
 
-export const ucFirst = (str: string | undefined) => {
+export const ucFirst = (str?: string) => {
   if (!str) {
     return str;
   }

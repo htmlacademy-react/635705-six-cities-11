@@ -8,8 +8,7 @@ type PlacesListProps = {
 
 function PlacesList({ offers }: PlacesListProps): JSX.Element {
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [activeCard, setActiveCard] = useState(0);
+  const [, setActiveCard] = useState(0);
 
   return (
     <div className="cities__places-list places__list tabs__content">
