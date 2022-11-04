@@ -6,19 +6,20 @@ import OfferPage from '../../pages/offer-page/offer-page';
 import NotFoundPage from '../../pages/not-found-page/not-found-page';
 import PrivateRoute from '../private-route/private-route';
 import { AppRoute } from '../../const';
+import { Hotel } from '../../types/hotel';
 
 type AppProps = {
-  rentalsNum: number;
   isAuthorized: boolean;
+  offers: Hotel[];
 }
 
-function App({ rentalsNum, isAuthorized }: AppProps): JSX.Element {
+function App({ isAuthorized, offers }: AppProps): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path={AppRoute.Main}
-          element={<MainPage rentalsNum={rentalsNum} />}
+          element={<MainPage offers={offers} />}
         />
         <Route
           path={AppRoute.Login}
@@ -28,14 +29,14 @@ function App({ rentalsNum, isAuthorized }: AppProps): JSX.Element {
           path={AppRoute.Favorites}
           element={
             <PrivateRoute isAuthorized={isAuthorized}>
-              <FavoritesPage />
+              <FavoritesPage offers={offers} />
             </PrivateRoute>
           }
         />
         <Route path={AppRoute.Room}>
           <Route
             path=':id'
-            element={<OfferPage />}
+            element={<OfferPage offers={offers} />}
           />
         </Route>
         <Route

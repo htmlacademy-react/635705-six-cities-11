@@ -1,4 +1,3 @@
-import { MouseEventHandler } from 'react';
 import { Link } from 'react-router-dom';
 import Mark from '../mark/mark';
 import Bookmark from '../bookmark/bookmark';
@@ -6,27 +5,22 @@ import { Hotel } from '../../types/hotel';
 import { getRating } from '../../utils';
 import { AppRoute } from '../../const';
 
-type PlaceCardProps = {
+type FavoritesCardProps = {
   offer: Hotel;
-  onMouseEnter: MouseEventHandler<HTMLElement>;
-  onMouseLeave: MouseEventHandler<HTMLElement>;
 }
 
-function PlaceCard({ offer, onMouseEnter, onMouseLeave }: PlaceCardProps): JSX.Element {
+function FavoritesCard({ offer }: FavoritesCardProps): JSX.Element {
   const { id, isPremium, previewImage, title, price, isFavorite, rating, type } = offer;
+
   return (
-    <article
-      className="cities__card place-card"
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
+    <article className="favorites__card place-card">
       {isPremium && <Mark />}
-      <div className="cities__image-wrapper place-card__image-wrapper">
+      <div className="favorites__image-wrapper place-card__image-wrapper">
         <Link to={`${AppRoute.Room}/${id}`}>
-          <img className="place-card__image" src={previewImage} width="260" height="200" alt={title} />
+          <img className="place-card__image" src={previewImage} width="150" height="110" alt={title} />
         </Link>
       </div>
-      <div className="place-card__info">
+      <div className="favorites__card-info place-card__info">
         <div className="place-card__price-wrapper">
           <div className="place-card__price">
             <b className="place-card__price-value">&euro;{price}</b>
@@ -45,8 +39,8 @@ function PlaceCard({ offer, onMouseEnter, onMouseLeave }: PlaceCardProps): JSX.E
         </h2>
         <p className="place-card__type">{type}</p>
       </div>
-    </article >
+    </article>
   );
 }
 
-export default PlaceCard;
+export default FavoritesCard;
