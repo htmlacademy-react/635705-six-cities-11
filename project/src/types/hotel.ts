@@ -1,11 +1,9 @@
+import { Location } from './location';
+
 export type Hotel = {
   bedrooms: number;
   city: {
-    location: {
-      latitude: number;
-      longitude: number;
-      zoom: number;
-    };
+    location: Location;
     name: string;
   };
   description: string;
@@ -20,11 +18,7 @@ export type Hotel = {
   images: string[];
   isFavorite: boolean;
   isPremium: boolean;
-  location: {
-    latitude: number;
-    longitude: number;
-    zoom: number;
-  };
+  location: Location;
   maxAdults: number;
   previewImage: string;
   price: number;
