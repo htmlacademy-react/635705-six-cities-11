@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import PlaceCard from '../../components/place-card/place-card';
 import { Hotel } from '../../types/hotel';
 
 type PlacesListProps = {
   offers: Hotel[];
+  onListItemHover: (listItemName: string) => void;
 }
 
-function PlacesList({ offers }: PlacesListProps): JSX.Element {
+function PlacesList({ offers, onListItemHover }: PlacesListProps): JSX.Element {
+  const listItemHoverHandler = (evt: MouseEvent<HTMLElement>) => {
+    onListItemHover(evt.target.city.name as string);
+  };
 
   const [, setActiveCard] = useState(0);
 
@@ -18,6 +22,7 @@ function PlacesList({ offers }: PlacesListProps): JSX.Element {
           key={`${offer.id}`}
           onMouseEnter={() => setActiveCard(offer.id)}
           onMouseLeave={() => setActiveCard(0)}
+          onMouseOver={listItemHoverHandler}
         />
       ))}
     </div>

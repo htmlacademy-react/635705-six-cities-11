@@ -10,15 +10,17 @@ type PlaceCardProps = {
   offer: Hotel;
   onMouseEnter: MouseEventHandler<HTMLElement>;
   onMouseLeave: MouseEventHandler<HTMLElement>;
+  onMouseOver: MouseEventHandler<HTMLElement>;
 }
 
-function PlaceCard({ offer, onMouseEnter, onMouseLeave }: PlaceCardProps): JSX.Element {
+function PlaceCard({ offer, onMouseEnter, onMouseLeave, onMouseOver }: PlaceCardProps): JSX.Element {
   const { id, isPremium, previewImage, title, price, isFavorite, rating, type } = offer;
   return (
     <article
       className="cities__card place-card"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      onMouseOver={onMouseOver}
     >
       {isPremium && <Mark />}
       <div className="cities__image-wrapper place-card__image-wrapper">

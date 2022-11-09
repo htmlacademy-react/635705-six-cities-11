@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import PlacesList from '../../components/places-list/places-list';
+import Map from '../../components/map/map';
 import { Hotel } from '../../types/hotel';
 
 type MainPageProps = {
@@ -6,6 +8,16 @@ type MainPageProps = {
 }
 
 function MainPage({ offers }: MainPageProps): JSX.Element {
+  const [selectedPoint, setSelectedPoint] = useState<Hotel | null>(null);
+  const selectedCity = offers[0].city;
+
+  const onListItemHover = (listItemName: string) => {
+    const currentPoint = offers.find((point) =>
+      point.city.name === listItemName,
+    );
+    setSelectedPoint(currentPoint as Hotel);
+  };
+
   return (
     <div className="page page--gray page--main">
       <header className="header">
@@ -95,10 +107,17 @@ function MainPage({ offers }: MainPageProps): JSX.Element {
                   <li className="places__option" tabIndex={0}>Top rated first</li>
                 </ul>
               </form>
-              <PlacesList offers={offers} />
+              <PlacesList
+                offers={offers}
+                onListItemHover={onListItemHover}
+              />
             </section>
             <div className="cities__right-section">
-              <section className="cities__map map"></section>
+              <Map
+                city={selectedCity.location}
+                points={offers.filter((point) => point.city.name === selectedCity.name)}
+                selectedPoint={selectedPoint as Hotel}
+              />
             </div>
           </div>
         </div>
