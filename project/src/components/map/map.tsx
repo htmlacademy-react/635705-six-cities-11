@@ -2,30 +2,29 @@ import { useEffect, useRef } from 'react';
 import leaflet from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import useMap from '../../hooks/useMap';
-import { URL_MARKER_DEFAULT, URL_MARKER_CURRENT } from '../../const';
-import { Hotel } from '../../types/hotel';
-import { Location } from '../../types/location';
+import { City, Hotel } from '../../types/hotel';
 
 type MapProps = {
-  city: Location;
+  city: City;
   points: Hotel[];
-  selectedPoint: Hotel;
-}
+  selectedPoint: Hotel | undefined;
+  className: string;
+};
 
-function Map({ city, points, selectedPoint }: MapProps): JSX.Element {
+function Map({ city, points, selectedPoint, className }: MapProps): JSX.Element {
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
 
   const defaultCustomIcon = leaflet.icon({
-    iconUrl: URL_MARKER_DEFAULT,
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
+    iconUrl: 'img/pin.svg',
+    iconSize: [27, 39],
+    iconAnchor: [13.5, 39]
   });
 
   const currentCustomIcon = leaflet.icon({
-    iconUrl: URL_MARKER_CURRENT,
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
+    iconUrl: 'img/pin-active.svg',
+    iconSize: [27, 39],
+    iconAnchor: [13.5, 39]
   });
 
   useEffect(() => {
@@ -34,11 +33,11 @@ function Map({ city, points, selectedPoint }: MapProps): JSX.Element {
         leaflet
           .marker({
             lat: point.location.latitude,
-            lng: point.location.longitude,
+            lng: point.location.longitude
           }, {
-            icon: (point.city.name === selectedPoint.city.name)
+            icon: (selectedPoint !== undefined && point.id === selectedPoint.id)
               ? currentCustomIcon
-              : defaultCustomIcon,
+              : defaultCustomIcon
           })
           .addTo(map);
       });
@@ -47,8 +46,7 @@ function Map({ city, points, selectedPoint }: MapProps): JSX.Element {
 
   return (
     <section
-      className="cities__map map"
-      style={{ height: '500px' }}
+      className={`map ${className}`}
       ref={mapRef}
     >
     </section>

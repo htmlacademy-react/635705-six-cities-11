@@ -1,19 +1,19 @@
 import { useEffect, useState, useRef } from 'react';
 import leaflet from 'leaflet';
-import { Location } from '../types/location';
+import { City } from '../types/hotel';
 
-function useMap(mapRef: React.MutableRefObject<HTMLElement | null>, city: Location) {
+function useMap(mapRef: React.MutableRefObject<HTMLElement | null>, city: City): leaflet.Map | null {
   const [map, setMap] = useState<leaflet.Map | null>(null);
-  const isRenderedRef = useRef(false);
+  const isRenderedRef = useRef<boolean>(false);
 
   useEffect(() => {
     if (mapRef.current !== null && !isRenderedRef.current) {
       const instance = leaflet.map(mapRef.current, {
         center: {
-          lat: city.latitude,
-          lng: city.longitude,
+          lat: city.location.latitude,
+          lng: city.location.longitude,
         },
-        zoom: city.zoom,
+        zoom: city.location.zoom,
       });
 
       leaflet
@@ -28,7 +28,7 @@ function useMap(mapRef: React.MutableRefObject<HTMLElement | null>, city: Locati
       setMap(instance);
       isRenderedRef.current = true;
     }
-  }, [mapRef, city]);
+  }, [mapRef, map, city]);
 
   return map;
 }

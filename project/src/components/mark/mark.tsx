@@ -1,8 +1,14 @@
-function Mark(): JSX.Element {
+type MarkProps = {
+  isPremium: boolean;
+  className: string;
+}
+
+function Mark({isPremium, className}: MarkProps) {
   return (
-    <div className="place-card__mark">
-      <span>Premium</span>
-    </div>
+    isPremium ?
+      <div className={className}>
+        <span>Premium</span>
+      </div> : <div />
   );
 }
 
