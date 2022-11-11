@@ -29,7 +29,7 @@ function LocationItem({ city, offers }: LocationItemProps): JSX.Element {
         {offers.map((offer) => (
           <PlaceCard
             offer={offer}
-            key={`${offer.id}-${offer.title}`.toString()}
+            key={`${offer.id}-${offer.title}`}
             placeCardAttributes={PlaceCardFavorites}
           />
         ))}

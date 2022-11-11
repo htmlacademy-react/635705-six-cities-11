@@ -22,7 +22,7 @@ function PlacesList({ offers, classNameAttribute, setSelectedPoint }: PlacesList
       {offers.map((offer, index) => (
         <PlaceCard
           offer={offer}
-          key={`${offer.id}-${index}`.toString()}
+          key={`${offer.id}-${index}`}
           onMouseMove={() => setSelectedPoint(offer)}
           onMouseOut={() => setSelectedPoint(undefined)}
           placeCardAttributes={PlaceCardFavorites}
