@@ -29,9 +29,9 @@ type OfferPageProps = {
   reviews: Comment[];
 }
 
-function OfferPage({offers, reviews}: OfferPageProps): JSX.Element {
+function OfferPage({ offers, reviews }: OfferPageProps): JSX.Element {
 
-  const [ selectedPoint, setSelectedPoint ] = useState<Hotel>();
+  const [selectedPoint, setSelectedPoint] = useState<Hotel>();
 
   const { id } = useParams();
   if (id === undefined) {
@@ -49,7 +49,7 @@ function OfferPage({offers, reviews}: OfferPageProps): JSX.Element {
       <main className="page__main page__main--property">
         <section className="property">
 
-          <Gallery offer={offer}/>
+          <Gallery offer={offer} />
 
           <div className="property__container container">
             <div className="property__wrapper">
@@ -61,12 +61,12 @@ function OfferPage({offers, reviews}: OfferPageProps): JSX.Element {
                   {offer.title}
                 </h1>
 
-                <Bookmark isFavorite={offer.isFavorite} bookmarkAttributes={bookmarkAttributesProperty}/>
+                <Bookmark isFavorite={offer.isFavorite} bookmarkAttributes={bookmarkAttributesProperty} />
 
               </div>
               <div className="property__rating rating">
                 <div className="property__stars rating__stars">
-                  <RatingStars rating={offer.rating}/>
+                  <RatingStars rating={offer.rating} />
                 </div>
                 <span className="property__rating-value rating__value">4.8</span>
               </div>
@@ -85,7 +85,7 @@ function OfferPage({offers, reviews}: OfferPageProps): JSX.Element {
                 <b className="property__price-value">&euro;{offer.price.toString()}</b>
                 <span className="property__price-text">&nbsp;night</span>
               </div>
-              <Inside offer={offer}/>
+              <Inside offer={offer} />
 
               <div className="property__host">
                 <h2 className="property__host-title">Meet the host</h2>
@@ -115,12 +115,12 @@ function OfferPage({offers, reviews}: OfferPageProps): JSX.Element {
                 </div>
               </div>
               <section className="property__reviews reviews">
-                <ReviewsList reviews={reviews}/>
+                <ReviewsList reviews={reviews} />
                 <Form />
               </section>
             </div>
           </div>
-          <Map city={offers[0].city} points={offers} selectedPoint={selectedPoint} className={MapСategory.Property}/>
+          <Map city={offers[0].city} points={offers} selectedPoint={selectedPoint} className={MapСategory.Property} />
         </section>
         <div className="container">
           <section className="near-places places">
@@ -128,7 +128,7 @@ function OfferPage({offers, reviews}: OfferPageProps): JSX.Element {
             <PlacesList
               offers={offers.filter((nearOffer) => nearOffer.city.name === offer.city.name)}
               classNameAttribute={classNamePlacesListForProperty}
-              setSelectedPoint={(offerActive: Hotel | undefined) => setSelectedPoint(offerActive)}
+              setSelectedPoint={(offerActive?: Hotel) => setSelectedPoint(offerActive)}
             />
           </section>
         </div>

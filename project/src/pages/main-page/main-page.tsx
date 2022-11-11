@@ -75,7 +75,7 @@ function MainPage({ offers }: MainPageProps): JSX.Element {
               <PlacesList
                 offers={offers}
                 classNameAttribute={classNamePlacesListForMain}
-                setSelectedPoint={(offer: Hotel | undefined) => setSelectedPoint(offer)}
+                setSelectedPoint={setSelectedPoint}
               />
             </section>
             <div className="cities__right-section">

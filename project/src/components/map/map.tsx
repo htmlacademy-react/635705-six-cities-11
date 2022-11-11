@@ -7,7 +7,7 @@ import { City, Hotel } from '../../types/hotel';
 type MapProps = {
   city: City;
   points: Hotel[];
-  selectedPoint: Hotel | undefined;
+  selectedPoint?: Hotel;
   className: string;
 };
 

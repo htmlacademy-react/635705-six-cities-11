@@ -13,10 +13,10 @@ const PlaceCardFavorites: PlaceCardAttributes = {
 type PlacesListProps = {
   offers: Hotel[];
   classNameAttribute: string;
-  setSelectedPoint: (id: Hotel | undefined ) => void;
+  setSelectedPoint: (id?: Hotel) => void;
 }
 
-function PlacesList({offers, classNameAttribute, setSelectedPoint}: PlacesListProps): JSX.Element {
+function PlacesList({ offers, classNameAttribute, setSelectedPoint }: PlacesListProps): JSX.Element {
   return (
     <div className={classNameAttribute}>
       {offers.map((offer, index) => (
