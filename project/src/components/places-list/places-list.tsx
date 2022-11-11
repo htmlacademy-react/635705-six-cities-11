@@ -19,10 +19,10 @@ type PlacesListProps = {
 function PlacesList({ offers, classNameAttribute, setSelectedPoint }: PlacesListProps): JSX.Element {
   return (
     <div className={classNameAttribute}>
-      {offers.map((offer, index) => (
+      {offers.map((offer) => (
         <PlaceCard
           offer={offer}
-          key={`${offer.id}-${index}`}
+          key={offer.id}
           onMouseMove={() => setSelectedPoint(offer)}
           onMouseOut={() => setSelectedPoint(undefined)}
           placeCardAttributes={PlaceCardFavorites}
