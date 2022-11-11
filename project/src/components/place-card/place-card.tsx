@@ -1,49 +1,61 @@
-import { MouseEventHandler } from 'react';
 import { Link } from 'react-router-dom';
-import Mark from '../mark/mark';
+import { BookmarkAttributes, PlaceCardAttributes} from '../../types/tags-attributes-types';
 import Bookmark from '../bookmark/bookmark';
 import { Hotel } from '../../types/hotel';
-import { getRating } from '../../utils';
-import { AppRoute } from '../../const';
+import { ucFirst } from '../../utils';
+import Mark from '../mark/mark';
+import RatingStars from '../rating-stars/ratind-stars';
 
-type PlaceCardProps = {
+const bookmarkAttributesPlaceCard: BookmarkAttributes = {
+  className: 'place-card__bookmark-button',
+  width: 18,
+  height: 19,
+  classNameToActiv: 'place-card__bookmark-button--active'
+};
+
+export type PlaceCardProps = {
+  placeCardAttributes: PlaceCardAttributes;
   offer: Hotel;
-  onMouseEnter: MouseEventHandler<HTMLElement>;
-  onMouseLeave: MouseEventHandler<HTMLElement>;
+  onMouseMove?: () => void;
+  onMouseOut?: () => void;
 }
 
-function PlaceCard({ offer, onMouseEnter, onMouseLeave }: PlaceCardProps): JSX.Element {
-  const { id, isPremium, previewImage, title, price, isFavorite, rating, type } = offer;
+function PlaceCard({placeCardAttributes, offer, onMouseMove, onMouseOut}: PlaceCardProps): JSX.Element {
+  const { isPremium, isFavorite, previewImage, price, rating, type, id, title } = offer;
+  const { card, imageWrapper, cardInfo, imgWidth, imgHeight } = placeCardAttributes;
   return (
     <article
-      className="cities__card place-card"
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      className={`${card} place-card`}
+      onMouseMove={onMouseMove}
+      onMouseOut={onMouseOut}
     >
-      {isPremium && <Mark />}
-      <div className="cities__image-wrapper place-card__image-wrapper">
-        <Link to={`${AppRoute.Room}/${id}`}>
-          <img className="place-card__image" src={previewImage} width="260" height="200" alt={title} />
+      <Mark isPremium={isPremium} className={'place-card__mark'} />
+      <div className={`${imageWrapper} place-card__image-wrapper`}>
+        <Link to={`/offer/${id}`}>
+          <img className="place-card__image" src={previewImage}
+            width={imgWidth}
+            height={imgHeight}
+            alt={type}
+          />
         </Link>
       </div>
-      <div className="place-card__info">
+      <div className={`place-card__info ${cardInfo}`}>
         <div className="place-card__price-wrapper">
           <div className="place-card__price">
             <b className="place-card__price-value">&euro;{price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
-          <Bookmark isFavorite={isFavorite} />
+          <Bookmark isFavorite={isFavorite} bookmarkAttributes={bookmarkAttributesPlaceCard}/>
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">
-            <span style={{ width: `${getRating(rating)}%` }}></span>
-            <span className="visually-hidden">Rating</span>
+            <RatingStars rating={rating} />
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`${AppRoute.Room}/${id}`}>{title}</Link>
+          <Link to={`/offer/${id}`}>{title}</Link>
         </h2>
-        <p className="place-card__type">{type}</p>
+        <p className="place-card__type">{ucFirst(type)}</p>
       </div>
     </article >
   );

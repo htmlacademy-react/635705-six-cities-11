@@ -1,23 +1,31 @@
-import { useState } from 'react';
-import PlaceCard from '../../components/place-card/place-card';
+import { PlaceCardAttributes } from '../../types/tags-attributes-types';
+import PlaceCard from '../place-card/place-card';
 import { Hotel } from '../../types/hotel';
+
+const PlaceCardFavorites: PlaceCardAttributes = {
+  card: 'cities__card',
+  imageWrapper: 'cities__image-wrapper',
+  cardInfo: '',
+  imgWidth: 260,
+  imgHeight: 200
+};
 
 type PlacesListProps = {
   offers: Hotel[];
+  classNameAttribute: string;
+  setSelectedPoint: (id?: Hotel) => void;
 }
 
-function PlacesList({ offers }: PlacesListProps): JSX.Element {
-
-  const [, setActiveCard] = useState(0);
-
+function PlacesList({ offers, classNameAttribute, setSelectedPoint }: PlacesListProps): JSX.Element {
   return (
-    <div className="cities__places-list places__list tabs__content">
-      {offers && offers.map((offer) => (
+    <div className={classNameAttribute}>
+      {offers.map((offer) => (
         <PlaceCard
           offer={offer}
-          key={`${offer.id}`}
-          onMouseEnter={() => setActiveCard(offer.id)}
-          onMouseLeave={() => setActiveCard(0)}
+          key={offer.id}
+          onMouseMove={() => setSelectedPoint(offer)}
+          onMouseOut={() => setSelectedPoint(undefined)}
+          placeCardAttributes={PlaceCardFavorites}
         />
       ))}
     </div>

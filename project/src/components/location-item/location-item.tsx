@@ -1,7 +1,16 @@
-import FavoritesCard from '../favorites-card/favorites-card';
 import { Hotel } from '../../types/hotel';
+import { PlaceCardAttributes } from '../../types/tags-attributes-types';
+import PlaceCard from '../place-card/place-card';
 
-type LocationItemProps = {
+export const PlaceCardFavorites: PlaceCardAttributes = {
+  card: 'favorites__card',
+  imageWrapper: 'favorites__image-wrapper',
+  cardInfo: 'favorites__card-info',
+  imgWidth: 150,
+  imgHeight: 110
+};
+
+export type LocationItemProps = {
   city: string;
   offers: Hotel[];
 }
@@ -18,9 +27,10 @@ function LocationItem({ city, offers }: LocationItemProps): JSX.Element {
       </div>
       <div className="favorites__places">
         {offers.map((offer) => (
-          <FavoritesCard
+          <PlaceCard
             offer={offer}
-            key={`${offer.id}`}
+            key={`${offer.id}-${offer.title}`}
+            placeCardAttributes={PlaceCardFavorites}
           />
         ))}
       </div>
