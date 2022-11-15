@@ -43,12 +43,13 @@ export const PlaceCardFavorites: PlaceCardAttributes = {
   imgHeight: 200
 };
 
-export enum TypeOffersSort {
-  Popular = 'Popular',
-  PriceLow = 'PriceLow',
-  PriceHigh = 'PriceHigh',
-  Top = 'Top'
-}
+
+export const TypeOffersSort: string[] = [
+  'Popular',
+  'Price: low to high',
+  'Price: high to low',
+  'Top rated first',
+];
 
 export const classNamePlacesListForMain = 'cities__places-list places__list tabs__content';
 
