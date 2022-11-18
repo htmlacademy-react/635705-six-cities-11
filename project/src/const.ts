@@ -54,3 +54,5 @@ export const TypeOffersSort: string[] = [
 export const classNamePlacesListForMain = 'cities__places-list places__list tabs__content';
 
 export const classNamePlacesListForProperty = 'near-places__list places__list';
+
+export const CITIES = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'];
