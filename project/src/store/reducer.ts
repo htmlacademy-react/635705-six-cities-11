@@ -4,7 +4,7 @@ import { CITIES } from '../const';
 import { changeCity } from './action';
 
 const initialState = {
-  city: CITIES[0],
+  city: CITIES[3],
   offers
 };
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import leaflet from 'leaflet';
+import { Icon, LayerGroup, Marker } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import useMap from '../../hooks/useMap';
 import { City, Hotel } from '../../types/hotel';
@@ -15,34 +15,47 @@ function Map({ city, points, selectedPoint, className }: MapProps): JSX.Element 
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
 
-  const defaultCustomIcon = leaflet.icon({
+  const defaultCustomIcon = new Icon({
     iconUrl: 'img/pin.svg',
     iconSize: [27, 39],
     iconAnchor: [13.5, 39]
   });
 
-  const currentCustomIcon = leaflet.icon({
+  const currentCustomIcon = new Icon({
     iconUrl: 'img/pin-active.svg',
     iconSize: [27, 39],
     iconAnchor: [13.5, 39]
   });
 
   useEffect(() => {
+    map?.setView([city.location.latitude, city.location.longitude], city.location.zoom);
+  }, [city, map]);
+
+  const layer = new LayerGroup();
+
+  useEffect(() => {
     if (map) {
       points.forEach((point) => {
-        leaflet
-          .marker({
-            lat: point.location.latitude,
-            lng: point.location.longitude
-          }, {
-            icon: (selectedPoint !== undefined && point.id === selectedPoint.id)
+        const marker = new Marker({
+          lat: point.location.latitude,
+          lng: point.location.longitude
+        });
+
+        marker
+          .setIcon(
+            selectedPoint && point === selectedPoint
               ? currentCustomIcon
               : defaultCustomIcon
-          })
-          .addTo(map);
+          );
+
+        layer.addLayer(marker);
       });
+
+      layer.addTo(map);
     }
-  }, [currentCustomIcon, defaultCustomIcon, map, points, selectedPoint]);
+
+    return () => { layer.clearLayers(); };
+  });
 
   return (
     <section
