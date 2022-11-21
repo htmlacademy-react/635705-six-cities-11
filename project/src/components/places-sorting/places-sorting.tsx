@@ -3,7 +3,7 @@ import PlacesOption from '../places-option/places-option';
 import { TypeOffersSort } from '../../const';
 
 function PlacesSorting(): JSX.Element {
-  const [selectedOption, setSelectedOption] = useState<string>(TypeOffersSort[0]);
+  const [selectedOption, setSelectedOption] = useState<string>(TypeOffersSort.Default);
   return (
     <form className="places__sorting" action="#" method="get">
       <span className="places__sorting-caption">Sort by </span>
@@ -14,7 +14,7 @@ function PlacesSorting(): JSX.Element {
         </svg>
       </span>
       <ul className="places__options places__options--custom places__options--opened">
-        {TypeOffersSort.map((option) => (
+        {Object.values(TypeOffersSort).map((option) => (
           <PlacesOption
             key={option}
             isActive={selectedOption === option}
