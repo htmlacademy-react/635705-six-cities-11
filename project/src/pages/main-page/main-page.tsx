@@ -7,11 +7,15 @@ import { classNamePlacesListForMain, MapСategory } from '../../const';
 import PlacesSorting from '../../components/places-sorting/places-sorting';
 import { useAppSelector } from '../../hooks/index';
 import Tabs from '../../components/tabs/tabs';
+import { getSortedOffers } from '../../utils';
 
 function MainPage(): JSX.Element {
   const [selectedPoint, setSelectedPoint] = useState<Hotel>();
   const currentCity = useAppSelector((state) => state.city);
-  const offers = useAppSelector((state) => state.offers).filter((offer) => offer.city.name === currentCity);
+  const offers = useAppSelector((state) => state.offers);
+  const cityOffers = offers.filter((offer) => offer.city.name === currentCity);
+  const sortType = useAppSelector((state) => state.sortType);
+  const sortedOffers = getSortedOffers(cityOffers, sortType);
 
   return (
     <div className="page page--gray page--main">
@@ -23,18 +27,18 @@ function MainPage(): JSX.Element {
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{offers.length} places to stay in {currentCity}</b>
+              <b className="places__found">{cityOffers.length} places to stay in {currentCity}</b>
               <PlacesSorting />
               <PlacesList
-                offers={offers}
+                offers={sortedOffers}
                 classNameAttribute={classNamePlacesListForMain}
                 setSelectedPoint={setSelectedPoint}
               />
             </section>
             <div className="cities__right-section">
               <Map
-                city={offers[0].city}
-                points={offers}
+                city={cityOffers[0].city}
+                points={cityOffers}
                 selectedPoint={selectedPoint}
                 className={MapСategory.Cities}
               />
