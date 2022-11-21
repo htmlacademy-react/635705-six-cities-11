@@ -39,7 +39,7 @@ function PlacesSorting(): JSX.Element {
       <span
         className="places__sorting-type"
         tabIndex={0}
-        onClick={() => { handleOptionsClick(); }}
+        onClick={handleOptionsClick}
       >
         {currentSortType}
         <svg className="places__sorting-arrow" width="7" height="4">
