@@ -1,12 +1,18 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { offers } from '../mocks/offers';
 import { CITIES } from '../const';
-import { changeCity, changeSortType } from './action';
+import { changeCity, changeSortType, loadOffers } from './action';
 import { TypeOffersSort } from '../const';
+import { Hotel } from '../types/hotel';
 
-const initialState = {
+type InitialState = {
+  city: string;
+  offers: Hotel[];
+  sortType: string;
+};
+
+const initialState: InitialState = {
   city: CITIES[3],
-  offers,
+  offers: [] as Hotel[],
   sortType: TypeOffersSort.Default
 };
 
@@ -19,6 +25,9 @@ const reducer = createReducer(initialState, (builder) => {
     .addCase(changeSortType, (state, action) => {
       const { sortType } = action.payload;
       state.sortType = sortType;
+    })
+    .addCase(loadOffers, (state, action) => {
+      state.offers = action.payload;
     });
 });
 
