@@ -5,14 +5,24 @@ import FavoritesPage from '../../pages/favorites-page/favorites-page';
 import OfferPage from '../../pages/offer-page/offer-page';
 import NotFoundPage from '../../pages/not-found-page/not-found-page';
 import PrivateRoute from '../private-route/private-route';
+import LoadingScreen from '../../pages/loading-screen/loading-screen';
 import { AppRoute, AuthorizationStatus } from '../../const';
 import { Comment } from '../../types/comment';
+import { useAppSelector } from '../../hooks';
 
 type AppProps = {
   reviews: Comment[];
 }
 
 function App({ reviews }: AppProps): JSX.Element {
+  const isOffersDataLoading: boolean = useAppSelector((state) => state.isOffersDataLoading);
+
+  if (isOffersDataLoading) {
+    return (
+      <LoadingScreen />
+    );
+  }
+
   return (
     <BrowserRouter>
       <Routes>
