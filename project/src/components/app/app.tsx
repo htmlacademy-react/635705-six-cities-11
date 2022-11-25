@@ -6,15 +6,13 @@ import OfferPage from '../../pages/offer-page/offer-page';
 import NotFoundPage from '../../pages/not-found-page/not-found-page';
 import PrivateRoute from '../private-route/private-route';
 import { AppRoute, AuthorizationStatus } from '../../const';
-import { Hotel } from '../../types/hotel';
 import { Comment } from '../../types/comment';
 
 type AppProps = {
   reviews: Comment[];
-  offers: Hotel[];
 }
 
-function App({ reviews, offers }: AppProps): JSX.Element {
+function App({ reviews }: AppProps): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
@@ -30,14 +28,14 @@ function App({ reviews, offers }: AppProps): JSX.Element {
           path={AppRoute.Favorites}
           element={
             <PrivateRoute authorization={AuthorizationStatus.Auth}>
-              <FavoritesPage offers={offers} />
+              <FavoritesPage />
             </PrivateRoute>
           }
         />
         <Route path={AppRoute.Room}>
           <Route
             path=':id'
-            element={<OfferPage offers={offers} reviews={reviews} />}
+            element={<OfferPage reviews={reviews} />}
           />
         </Route>
         <Route
