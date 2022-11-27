@@ -1,13 +1,10 @@
 import FavoritesList from '../../components/favorites-list/favorites-list';
 import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
-import { Hotel } from '../../types/hotel';
+import { useAppSelector } from '../../hooks/index';
 
-type FavoritesPageProps = {
-  offers: Hotel[];
-}
-
-function FavoritesPage({ offers }: FavoritesPageProps): JSX.Element {
+function FavoritesPage(): JSX.Element {
+  const offers = useAppSelector((state) => state.offers);
   const favoritesOffers = offers.filter((offer) => offer.isFavorite);
 
   return (

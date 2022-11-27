@@ -16,6 +16,7 @@ import { ucFirst } from '../../utils';
 import { Comment } from '../../types/comment';
 import { BookmarkAttributes } from '../../types/tags-attributes-types';
 import NotFoundPage from '../not-found-page/not-found-page';
+import { useAppSelector } from '../../hooks/index';
 
 const bookmarkAttributesProperty: BookmarkAttributes = {
   className: 'property__bookmark-button',
@@ -25,11 +26,11 @@ const bookmarkAttributesProperty: BookmarkAttributes = {
 };
 
 type OfferPageProps = {
-  offers: Hotel[];
   reviews: Comment[];
 }
 
-function OfferPage({ offers, reviews }: OfferPageProps): JSX.Element {
+function OfferPage({ reviews }: OfferPageProps): JSX.Element {
+  const offers = useAppSelector((state) => state.offers);
 
   const [selectedPoint, setSelectedPoint] = useState<Hotel>();
 

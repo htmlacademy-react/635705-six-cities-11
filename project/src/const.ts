@@ -55,3 +55,12 @@ export const classNamePlacesListForMain = 'cities__places-list places__list tabs
 export const classNamePlacesListForProperty = 'near-places__list places__list';
 
 export const CITIES = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'];
+
+export enum APIRoute {
+  Offers = '/hotels',
+  Nearby = '/nearby',
+  Favorites = '/favorite',
+  Reviews = '/comments',
+  Login = '/login',
+  Logout = '/logout'
+}
