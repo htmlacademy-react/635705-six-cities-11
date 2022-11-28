@@ -1,9 +1,13 @@
-function Footer(): JSX.Element {
+import Logo from '../logo/logo';
+
+type FooterProps = {
+  isContainer?: boolean;
+};
+
+function Footer({ isContainer = false }: FooterProps): JSX.Element {
   return (
-    <footer className="footer container">
-      <a className="footer__logo-link" href="main.html">
-        <img className="footer__logo" src="img/logo.svg" alt="6 cities logo" width="64" height="33" />
-      </a>
+    <footer className={`footer ${isContainer ? 'container' : ''}`}>
+      <Logo type={'footer'} width={64} height={33} />
     </footer>
   );
 }

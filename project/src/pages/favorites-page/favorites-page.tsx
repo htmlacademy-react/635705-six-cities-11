@@ -18,7 +18,7 @@ function FavoritesPage(): JSX.Element {
           </section >
         </div >
       </main >
-      <Footer />
+      <Footer isContainer={favoritesOffers.length > 0} />
     </div>
   );
 }

@@ -6,7 +6,7 @@ import OfferPage from '../../pages/offer-page/offer-page';
 import NotFoundPage from '../../pages/not-found-page/not-found-page';
 import PrivateRoute from '../private-route/private-route';
 import LoadingScreen from '../../pages/loading-screen/loading-screen';
-import { AppRoute, AuthorizationStatus } from '../../const';
+import { AppRoute } from '../../const';
 import { Comment } from '../../types/comment';
 import { useAppSelector } from '../../hooks';
 
@@ -37,7 +37,7 @@ function App({ reviews }: AppProps): JSX.Element {
         <Route
           path={AppRoute.Favorites}
           element={
-            <PrivateRoute authorization={AuthorizationStatus.Auth}>
+            <PrivateRoute>
               <FavoritesPage />
             </PrivateRoute>
           }
