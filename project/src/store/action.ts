@@ -8,3 +8,4 @@ export const changeSortType = createAction<{ sortType: TypeOffersSort }>('offer/
 export const loadOffers = createAction<Hotel[]>('data/loadOffers');
 export const setOffersDataLoadingStatus = createAction<boolean>('data/setOffersDataLoadingStatus');
 export const requireAuthorization = createAction<AuthorizationStatus>('user/requireAuthorization');
+export const setError = createAction<string | null>('data/setError');
