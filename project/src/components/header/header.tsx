@@ -1,10 +1,13 @@
-import { useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { AuthorizationStatus, AppRoute } from '../../const';
 import { Link } from 'react-router-dom';
 import Logo from '../logo/logo';
+import { logoutAction } from '../../store/api-actions';
+import { SyntheticEvent } from 'react';
 
 function Header(): JSX.Element {
   const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const dispatch = useAppDispatch();
 
   return (
     <header className="header">
@@ -31,9 +34,15 @@ function Header(): JSX.Element {
               </li>
               {authorizationStatus === AuthorizationStatus.Auth && (
                 <li className="header__nav-item">
-                  <a className="header__nav-link" href="/">
+                  <Link className="header__nav-link"
+                    to={AppRoute.Login}
+                    onClick={(evt: SyntheticEvent<HTMLElement>) => {
+                      evt.preventDefault();
+                      dispatch(logoutAction());
+                    }}
+                  >
                     <span className="header__signout">Sign out</span>
-                  </a>
+                  </Link>
                 </li>
               )}
             </ul>
