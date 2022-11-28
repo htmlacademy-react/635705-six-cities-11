@@ -7,7 +7,7 @@ import { APIRoute, AuthorizationStatus, TIMEOUT_SHOW_ERROR } from '../const';
 import { store } from './';
 import { UserData } from '../types/user-data.js';
 import { AuthData } from '../types/auth-data.js';
-import { dropToken, saveToken } from '../services/token.js';
+import { dropToken, saveToken } from '../services/token';
 
 export const clearErrorAction = createAsyncThunk(
   'data/clearError',
