@@ -5,8 +5,9 @@ import App from './components/app/app';
 import ErrorMessage from './components/error-message/error-message';
 import { reviews } from './mocks/reviews';
 import { store } from './store';
-import { fetchOfferAction } from './store/api-actions';
+import { checkAuthAction, fetchOfferAction } from './store/api-actions';
 
+store.dispatch(checkAuthAction());
 store.dispatch(fetchOfferAction());
 
 const root = ReactDOM.createRoot(
