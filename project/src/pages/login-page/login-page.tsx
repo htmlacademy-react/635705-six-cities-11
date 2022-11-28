@@ -1,5 +1,5 @@
 import { useRef, FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { loginAction } from '../../store/api-actions';
 import { AuthData } from '../../types/auth-data';
@@ -13,6 +13,7 @@ function LoginPage(): JSX.Element {
   const city = useAppSelector((state) => state.city);
 
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const onSubmit = (authData: AuthData) => {
     dispatch(loginAction(authData));
@@ -26,7 +27,7 @@ function LoginPage(): JSX.Element {
         login: loginRef.current.value,
         password: passwordRef.current.value,
       });
-
+      navigate(AppRoute.Main);
     }
   };
 
