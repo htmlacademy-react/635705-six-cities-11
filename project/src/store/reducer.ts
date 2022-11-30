@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { AuthorizationStatus, CITIES } from '../const';
-import { changeCity, changeSortType, loadOffers, loadReviews, requireAuthorization, setError, setOffersDataLoadingStatus } from './action';
+import { changeCity, changeSortType, loadOffers, loadReviews, requireAuthorization, sendNewReview, setError, setOffersDataLoadingStatus } from './action';
 import { TypeOffersSort } from '../const';
 import { Hotel } from '../types/hotel';
 import { Comment } from '../types/comment';
@@ -39,6 +39,9 @@ const reducer = createReducer(initialState, (builder) => {
       state.offers = action.payload;
     })
     .addCase(loadReviews, (state, action) => {
+      state.reviews = action.payload;
+    })
+    .addCase(sendNewReview, (state, action) => {
       state.reviews = action.payload;
     })
     .addCase(setOffersDataLoadingStatus, (state, action) => {

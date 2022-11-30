@@ -124,7 +124,7 @@ function OfferPage(): JSX.Element {
               </div>
               <section className="property__reviews reviews">
                 <ReviewsList reviews={reviews} />
-                <Form />
+                <Form offerID={Number(id)} />
               </section>
             </div>
           </div>

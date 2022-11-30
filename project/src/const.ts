@@ -66,3 +66,6 @@ export enum APIRoute {
 }
 
 export const TIMEOUT_SHOW_ERROR = 2000;
+
+export const MIN_REVIEW_LENGTH = 50;
+export const MAX_REVIEW_LENGTH = 300;

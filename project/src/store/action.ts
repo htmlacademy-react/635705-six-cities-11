@@ -8,6 +8,7 @@ export const changeCity = createAction<{ city: string }>('offer/changeCity');
 export const changeSortType = createAction<{ sortType: TypeOffersSort }>('offer/changeSortType');
 export const loadOffers = createAction<Hotel[]>('data/loadOffers');
 export const loadReviews = createAction<Comment[]>('data/loadReviews');
+export const sendNewReview = createAction<Comment[]>('data/sendNewReview');
 export const setOffersDataLoadingStatus = createAction<boolean>('data/setOffersDataLoadingStatus');
 export const requireAuthorization = createAction<AuthorizationStatus>('user/requireAuthorization');
 export const setError = createAction<string | null>('data/setError');
