@@ -10,7 +10,7 @@ import RatingStars from '../../components/rating-stars/ratind-stars';
 import Form from '../../components/form/form';
 import ReviewsList from '../../components/reviews-list/reviews-list';
 import Map from '../../components/map/map';
-import { classNamePlacesListForProperty, MapСategory } from '../../const';
+import { AuthorizationStatus, classNamePlacesListForProperty, MapСategory } from '../../const';
 import { Hotel } from '../../types/hotel';
 import { ucFirst } from '../../utils';
 import { BookmarkAttributes } from '../../types/tags-attributes-types';
@@ -40,6 +40,7 @@ function OfferPage(): JSX.Element {
 
   const offers = useAppSelector((state) => state.offers);
   const reviews = useAppSelector((state) => state.reviews);
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
 
   if (id === undefined) {
     return <NotFoundPage />;
@@ -124,7 +125,7 @@ function OfferPage(): JSX.Element {
               </div>
               <section className="property__reviews reviews">
                 <ReviewsList reviews={reviews} />
-                <Form offerID={Number(id)} />
+                {(authorizationStatus === AuthorizationStatus.Auth) && <Form offerID={Number(id)} />}
               </section>
             </div>
           </div>
