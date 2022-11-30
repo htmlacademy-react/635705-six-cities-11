@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Bookmark from '../../components/bookmark/bookmark';
 import Gallery from '../../components/gallery/gallery';
@@ -13,10 +13,10 @@ import Map from '../../components/map/map';
 import { classNamePlacesListForProperty, MapСategory } from '../../const';
 import { Hotel } from '../../types/hotel';
 import { ucFirst } from '../../utils';
-import { Comment } from '../../types/comment';
 import { BookmarkAttributes } from '../../types/tags-attributes-types';
 import NotFoundPage from '../not-found-page/not-found-page';
-import { useAppSelector } from '../../hooks/index';
+import { useAppDispatch, useAppSelector } from '../../hooks/index';
+import { fetchReviewAction } from '../../store/api-actions';
 
 const bookmarkAttributesProperty: BookmarkAttributes = {
   className: 'property__bookmark-button',
@@ -25,21 +25,28 @@ const bookmarkAttributesProperty: BookmarkAttributes = {
   classNameToActiv: 'property__bookmark-button--active'
 };
 
-type OfferPageProps = {
-  reviews: Comment[];
-}
-
-function OfferPage({ reviews }: OfferPageProps): JSX.Element {
-  const offers = useAppSelector((state) => state.offers);
+function OfferPage(): JSX.Element {
 
   const [selectedPoint, setSelectedPoint] = useState<Hotel>();
 
   const { id } = useParams();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchReviewAction(id));
+    }
+  }, [dispatch, id]);
+
+  const offers = useAppSelector((state) => state.offers);
+  const reviews = useAppSelector((state) => state.reviews);
+
   if (id === undefined) {
     return <NotFoundPage />;
   }
 
   const offer = offers.find((item) => item.id === Number(id));
+
   if (offer === undefined) {
     return <NotFoundPage />;
   }

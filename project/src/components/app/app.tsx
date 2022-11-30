@@ -7,14 +7,9 @@ import NotFoundPage from '../../pages/not-found-page/not-found-page';
 import PrivateRoute from '../private-route/private-route';
 import LoadingScreen from '../../pages/loading-screen/loading-screen';
 import { AppRoute } from '../../const';
-import { Comment } from '../../types/comment';
 import { useAppSelector } from '../../hooks';
 
-type AppProps = {
-  reviews: Comment[];
-}
-
-function App({ reviews }: AppProps): JSX.Element {
+function App(): JSX.Element {
   const isOffersDataLoading: boolean = useAppSelector((state) => state.isOffersDataLoading);
 
   if (isOffersDataLoading) {
@@ -45,7 +40,7 @@ function App({ reviews }: AppProps): JSX.Element {
         <Route path={AppRoute.Room}>
           <Route
             path=':id'
-            element={<OfferPage reviews={reviews} />}
+            element={<OfferPage />}
           />
         </Route>
         <Route

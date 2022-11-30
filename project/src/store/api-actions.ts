@@ -2,7 +2,8 @@ import { AxiosInstance } from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AppDispatch, State } from '../types/state.js';
 import { Hotel } from '../types/hotel';
-import { loadOffers, requireAuthorization, setError, setOffersDataLoadingStatus } from './action';
+import { Comment } from '../types/comment';
+import { loadOffers, loadReviews, requireAuthorization, setError, setOffersDataLoadingStatus } from './action';
 import { APIRoute, AuthorizationStatus, TIMEOUT_SHOW_ERROR } from '../const';
 import { store } from './';
 import { UserData } from '../types/user-data.js';
@@ -30,6 +31,18 @@ export const fetchOfferAction = createAsyncThunk<void, undefined, {
     const { data } = await api.get<Hotel[]>(APIRoute.Offers);
     dispatch(setOffersDataLoadingStatus(false));
     dispatch(loadOffers(data));
+  },
+);
+
+export const fetchReviewAction = createAsyncThunk<void, string, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'data/fetchReviews',
+  async (id, { dispatch, extra: api }) => {
+    const { data } = await api.get<Comment[]>(`${APIRoute.Reviews}/${id}`);
+    dispatch(loadReviews(data));
   },
 );
 
