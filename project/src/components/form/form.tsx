@@ -2,6 +2,7 @@ import { ChangeEvent, FormEvent, useState } from 'react';
 import { useAppDispatch } from '../../hooks';
 import { sendNewReviewAction } from '../../store/api-actions';
 import { ReviewData } from '../../types/review-data';
+import { MIN_REVIEW_LENGTH, MAX_REVIEW_LENGTH } from '../../const';
 
 type FormProps = {
   offerID: number;
@@ -25,13 +26,17 @@ function Form({ offerID }: FormProps): JSX.Element {
     dispatch(sendNewReviewAction(reviewData));
   };
 
+  const isFormValid = formData.rating !== 0 && formData.review.length > MIN_REVIEW_LENGTH && formData.review.length < MAX_REVIEW_LENGTH;
+
   const reviewFormSubmitHandle = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-    onSubmit({
+
+    isFormValid && onSubmit({
       id: offerID,
       comment: formData.review,
       rating: formData.rating,
     });
+
     setFormData({ ...formData, review: '', rating: 0 });
   };
 
@@ -77,12 +82,13 @@ function Form({ offerID }: FormProps): JSX.Element {
         placeholder="Tell how was your stay, what you like and what can be improved"
         onChange={fieldChangeHandle}
         value={formData.review}
+        maxLength={MAX_REVIEW_LENGTH}
       />
       <div className="reviews__button-wrapper">
         <p className="reviews__help">
           To submit review please make sure to set <span className="reviews__star">rating</span> and describe your stay with at least <b className="reviews__text-amount">50 characters</b>.
         </p>
-        <button className="reviews__submit form__submit button" type="submit">Submit</button>
+        <button className="reviews__submit form__submit button" type="submit" disabled={!isFormValid} >Submit</button>
       </div>
     </form>
   );
