@@ -1,38 +1,30 @@
+import { AppRoute } from '../../const';
 import { Hotel } from '../../types/hotel';
-import { PlaceCardAttributes } from '../../types/tags-attributes-types';
 import PlaceCard from '../place-card/place-card';
-
-export const PlaceCardFavorites: PlaceCardAttributes = {
-  card: 'favorites__card',
-  imageWrapper: 'favorites__image-wrapper',
-  cardInfo: 'favorites__card-info',
-  imgWidth: 150,
-  imgHeight: 110
-};
 
 export type LocationItemProps = {
   city: string;
-  offers: Hotel[];
+  offersFavorList: Hotel[];
 }
 
-function LocationItem({ city, offers }: LocationItemProps): JSX.Element {
+function LocationItem({ city, offersFavorList }: LocationItemProps): JSX.Element {
   return (
-    <li className="favorites__locations-items">
+    <li key={city} className="favorites__locations-items">
       <div className="favorites__locations locations locations--current">
         <div className="locations__item">
-          <a className="locations__item-link" href="/#">
+          <a className="locations__item-link" href="/">
             <span>{city}</span>
           </a>
         </div>
       </div>
       <div className="favorites__places">
-        {offers.map((offer) => (
-          <PlaceCard
-            offer={offer}
-            key={`${offer.id}-${offer.title}`}
-            placeCardAttributes={PlaceCardFavorites}
-          />
-        ))}
+        {offersFavorList.filter((offer) => offer.city.name === city)
+          .map((offer) => (
+            <PlaceCard
+              key={offer.id}
+              card={offer}
+              pageType={AppRoute.Favorites}
+            />))}
       </div>
     </li>
   );

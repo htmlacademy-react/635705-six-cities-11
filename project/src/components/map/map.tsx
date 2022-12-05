@@ -1,61 +1,63 @@
 import { useEffect, useRef } from 'react';
-import { Icon, LayerGroup, Marker } from 'leaflet';
+import { Icon, Marker } from 'leaflet';
+import _ from 'lodash';
+import { Hotel, LocationType, CityType } from '../../types/hotel';
+import { IMG_MARKER_DEFAULT, IMG_MARKER_CURRENT } from '../../const';
 import 'leaflet/dist/leaflet.css';
-import useMap from '../../hooks/useMap';
-import { City, Hotel } from '../../types/hotel';
+import useMap from '../../hooks/use-map/use-map';
 
 type MapProps = {
-  city: City;
-  points: Hotel[];
-  selectedPoint?: Hotel;
+  city: CityType;
+  offers: Hotel[];
+  selectedPoint?: LocationType | null;
   className: string;
 };
 
-function Map({ city, points, selectedPoint, className }: MapProps): JSX.Element {
+const defaultCustomIcon = new Icon({
+  iconUrl: IMG_MARKER_DEFAULT,
+  iconSize: [27, 39],
+  iconAnchor: [13.5, 39]
+});
+
+const currentCustomIcon = new Icon({
+  iconUrl: IMG_MARKER_CURRENT,
+  iconSize: [27, 39],
+  iconAnchor: [13.5, 39]
+});
+
+function Map({ city, offers, selectedPoint, className }: MapProps): JSX.Element {
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
 
-  const defaultCustomIcon = new Icon({
-    iconUrl: 'img/pin.svg',
-    iconSize: [27, 39],
-    iconAnchor: [13.5, 39]
-  });
-
-  const currentCustomIcon = new Icon({
-    iconUrl: 'img/pin-active.svg',
-    iconSize: [27, 39],
-    iconAnchor: [13.5, 39]
-  });
-
-  useEffect(() => {
-    map?.setView([city.location.latitude, city.location.longitude], city.location.zoom);
-  }, [city, map]);
-
-  const layer = new LayerGroup();
+  const points: LocationType[] = offers.map((el) => el.location);
 
   useEffect(() => {
     if (map) {
       points.forEach((point) => {
         const marker = new Marker({
-          lat: point.location.latitude,
-          lng: point.location.longitude
+          lat: point.latitude,
+          lng: point.longitude
         });
 
         marker
           .setIcon(
-            selectedPoint && point === selectedPoint
+            selectedPoint !== undefined && _.isEqual(point, selectedPoint)
               ? currentCustomIcon
               : defaultCustomIcon
-          );
-
-        layer.addLayer(marker);
+          )
+          .addTo(map);
       });
-
-      layer.addTo(map);
     }
+  }, [map, points, selectedPoint]);
 
-    return () => { layer.clearLayers(); };
-  });
+  useEffect(() => {
+    if (map) {
+      map.setView({
+        lat: city.location.latitude,
+        lng: city.location.longitude
+      }, city.location.zoom);
+    }
+  }, [map, city]);
 
   return (
     <section

@@ -1,33 +1,34 @@
-import { Location } from './location';
-
-export type City = {
-  location: Location;
-  name: string;
-};
-
-type Host = {
+export type HostType = {
   avatarUrl: string;
   id: number;
   isPro: boolean;
   name: string;
+}
+export type LocationType = {
+  latitude: number;
+  longitude: number;
+  zoom: number;
+};
+export type CityType = {
+  location: LocationType;
+  name: string;
 };
 
 export type Hotel = {
+  id: number;
   bedrooms: number;
-  city: City;
+  city: CityType;
   description: string;
   goods: string[];
-  host: Host;
-  id: number;
+  host: HostType;
   images: string[];
   isFavorite: boolean;
   isPremium: boolean;
-  location: Location;
+  location: LocationType;
   maxAdults: number;
   previewImage: string;
   price: number;
   rating: number;
   title: string;
   type: string;
-}
-
+};

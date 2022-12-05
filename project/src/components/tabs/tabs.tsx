@@ -1,17 +1,22 @@
+import { SyntheticEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { CITIES, AppRoute } from '../../const';
 import { useAppDispatch } from '../../hooks';
-import { changeCity } from '../../store/action';
+import { changeCity } from '../../store/offers-data/offers-data';
+import { resetSort } from '../../store/sort-process/sort-process';
 
-type CitiesProps = {
-  currentCity: string;
-};
+type TabsProps = {
+  cityName: string;
+}
 
-function Tabs({ currentCity }: CitiesProps): JSX.Element {
+function Tabs({ cityName }: TabsProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const handleCityClick = (city: string) => {
-    dispatch(changeCity({ city }));
+  const handleCityClick = (evt: SyntheticEvent<HTMLElement>) => {
+    evt.preventDefault();
+    const currentCity: string = evt.currentTarget.innerText;
+    dispatch(changeCity({ currentCity }));
+    dispatch(resetSort());
   };
 
   return (
@@ -19,14 +24,14 @@ function Tabs({ currentCity }: CitiesProps): JSX.Element {
       <section className="locations container">
         <ul className="locations__list tabs__list">
           {CITIES.map((city) => {
-            const activeClass = city === currentCity ? 'tabs__item--active' : '';
+            const activeClass = city === cityName ? 'tabs__item--active' : '';
 
             return (
               <li className="locations__item" key={city}>
                 <Link
                   className={`locations__item-link tabs__item ${activeClass}`}
                   to={AppRoute.Main}
-                  onClick={() => handleCityClick(city)}
+                  onClick={handleCityClick}
                 >
                   <span>{city}</span>
                 </Link>

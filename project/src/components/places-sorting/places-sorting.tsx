@@ -1,63 +1,42 @@
-import { useState, useRef } from 'react';
-import PlacesOption from '../places-option/places-option';
-import { TypeOffersSort } from '../../const';
+import { MouseEvent } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { changeSortType } from '../../store/action';
-import { useOnClickOutside } from 'usehooks-ts';
+import { TypeOffersSortArray } from '../../const';
+import { getSortType, getSortView } from '../../store/sort-process/selectors';
+import { sortOffersType, sortMenuView } from '../../store/sort-process/sort-process';
+
 
 function PlacesSorting(): JSX.Element {
-  const ref = useRef(null);
+
+  const currentSortType = useAppSelector(getSortType);
+  const currentSortView = useAppSelector(getSortView);
   const dispatch = useAppDispatch();
 
-  const [isOptionsOpen, setOptionsView] = useState<boolean>(false);
-  const currentSortType = useAppSelector((state) => state.sortType);
-
-  const closeOptions = () => {
-    if (isOptionsOpen) {
-      setOptionsView(false);
-    }
+  const handleChange = (event: MouseEvent<HTMLLIElement, globalThis.MouseEvent>) => {
+    dispatch(sortOffersType({ currentType: event.currentTarget.innerText }));
   };
-
-  const handleSortingClick = (sortType: TypeOffersSort) => {
-    dispatch(changeSortType({ sortType }));
-    closeOptions();
-  };
-
-  const handleOptionsClick = () => {
-    if (!isOptionsOpen) {
-      setOptionsView(true);
-      return;
-    }
-    closeOptions();
-  };
-
-  useOnClickOutside(ref, closeOptions);
-
   return (
     <form className="places__sorting" action="#" method="get">
-      <span className="places__sorting-caption">Sort by </span>
-      <span
-        className="places__sorting-type"
-        tabIndex={0}
-        onClick={handleOptionsClick}
-      >
+      <span className="places__sorting-caption">Sort by</span>
+      <span className="places__sorting-type" tabIndex={0}>
         {currentSortType}
-        <svg className="places__sorting-arrow" width="7" height="4">
+        <svg className="places__sorting-arrow" width="7" height="4" onClick={() => dispatch(sortMenuView())}>
           <use xlinkHref="#icon-arrow-select"></use>
         </svg>
       </span>
-      <ul className={`places__options places__options--custom ${isOptionsOpen ? 'places__options--opened' : ''}`} ref={ref}>
-        {Object.values(TypeOffersSort).map((option) => (
-          <PlacesOption
-            key={option}
-            isActive={currentSortType === option}
-            text={option}
-            handleSortingClick={handleSortingClick}
-          />
-        ))}
+      <ul className={`places__options places__options--custom places__options--${currentSortView}`}>
+        {TypeOffersSortArray.map((sortType) => (
+          <li
+            key={sortType}
+            className={`places__option ${sortType === currentSortType ? 'places__option--active' : ''} `}
+            tabIndex={0}
+            onClick={handleChange}
+          >
+            {sortType}
+          </li>)
+        )}
       </ul>
-    </form>
-  );
+    </form>);
 }
+
 
 export default PlacesSorting;

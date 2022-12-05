@@ -1,5 +1,3 @@
-import { PlaceCardAttributes } from '../src/types/tags-attributes-types';
-
 export enum AppRoute {
   Main = '/',
   Login = '/login',
@@ -20,28 +18,16 @@ export enum MapСategory {
   Cities = 'cities__map',
 }
 
-export const IconParameter = {
-  Size: {
-    x: 27,
-    y: 39
-  },
-  Anchor: {
-    x: 13.5,
-    y: 39
-  },
-  Url: {
-    Default: 'img/pin.svg',
-    Current: 'img/pin-active.svg'
-  }
-} as const;
+export enum HouseTypes {
+  Apartment = 'apartment',
+  Room = 'room',
+  House = 'house',
+  Hotel = 'hotel'
+}
 
-export const PlaceCardFavorites: PlaceCardAttributes = {
-  card: 'cities__card',
-  imageWrapper: 'cities__image-wrapper',
-  cardInfo: '',
-  imgWidth: 260,
-  imgHeight: 200
-};
+export const IMG_MARKER_DEFAULT = 'img/pin.svg';
+
+export const IMG_MARKER_CURRENT = 'img/pin-active.svg';
 
 export enum TypeOffersSort {
   Default = 'Popular',
@@ -50,22 +36,23 @@ export enum TypeOffersSort {
   TopRated = 'Top rated first'
 }
 
-export const classNamePlacesListForMain = 'cities__places-list places__list tabs__content';
-
-export const classNamePlacesListForProperty = 'near-places__list places__list';
+export const TypeOffersSortArray = [TypeOffersSort.Default, TypeOffersSort.LowToHigh, TypeOffersSort.HighToLow, TypeOffersSort.TopRated];
 
 export const CITIES = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'];
 
 export enum APIRoute {
   Offers = '/hotels',
-  Nearby = '/nearby',
-  Favorites = '/favorite',
   Reviews = '/comments',
   Login = '/login',
   Logout = '/logout'
 }
 
-export const TIMEOUT_SHOW_ERROR = 2000;
+export const RATING_STARS = ['1', '2', '3', '4', '5'];
 
-export const MIN_REVIEW_LENGTH = 50;
-export const MAX_REVIEW_LENGTH = 300;
+export enum NameSpace {
+  DataOffers = 'DATA_OFFERS',
+  DataComments = 'DATA_COMMENTS',
+  Sort = 'SORT',
+  User = 'USER',
+  Offers = 'OFFERS',
+}

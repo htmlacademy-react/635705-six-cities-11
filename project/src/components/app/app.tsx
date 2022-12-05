@@ -1,4 +1,4 @@
-import { Route, BrowserRouter, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import MainPage from '../../pages/main-page/main-page';
 import LoginPage from '../../pages/login-page/login-page';
 import FavoritesPage from '../../pages/favorites-page/favorites-page';
@@ -8,18 +8,31 @@ import PrivateRoute from '../private-route/private-route';
 import LoadingScreen from '../../pages/loading-screen/loading-screen';
 import { AppRoute } from '../../const';
 import { useAppSelector } from '../../hooks';
+import ErrorScreen from '../../pages/error-screen/error-screen';
+import HistoryRouter from '../history-route/history-route';
+import browserHistory from '../../browser-history';
+import { getAuthorizationStatus, getAuthCheckedStatus } from '../../store/user-process/selectors';
+import { getOffersDataLoadingStatus, getErrorStatus } from '../../store/offers-data/selectors';
 
 function App(): JSX.Element {
-  const isOffersDataLoading: boolean = useAppSelector((state) => state.isOffersDataLoading);
+  const isOffersDataLoading = useAppSelector(getOffersDataLoadingStatus);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
+  const isAuthChecked = useAppSelector(getAuthCheckedStatus);
+  const hasError = useAppSelector(getErrorStatus);
 
-  if (isOffersDataLoading) {
+  if (!isAuthChecked || isOffersDataLoading) {
     return (
       <LoadingScreen />
     );
   }
 
+  if (hasError) {
+    return (
+      <ErrorScreen />);
+  }
+
   return (
-    <BrowserRouter>
+    <HistoryRouter history={browserHistory}>
       <Routes>
         <Route
           path={AppRoute.Main}
@@ -27,12 +40,22 @@ function App(): JSX.Element {
         />
         <Route
           path={AppRoute.Login}
-          element={<LoginPage />}
+          element={
+            <PrivateRoute
+              authorizationStatus={authorizationStatus}
+              pageType={AppRoute.Login}
+            >
+              <LoginPage />
+            </PrivateRoute>
+          }
         />
         <Route
           path={AppRoute.Favorites}
           element={
-            <PrivateRoute>
+            <PrivateRoute
+              authorizationStatus={authorizationStatus}
+              pageType={AppRoute.Favorites}
+            >
               <FavoritesPage />
             </PrivateRoute>
           }
@@ -48,7 +71,7 @@ function App(): JSX.Element {
           element={<NotFoundPage />}
         />
       </Routes>
-    </BrowserRouter>
+    </HistoryRouter>
   );
 }
 

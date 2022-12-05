@@ -1,19 +1,16 @@
-import { BookmarkAttributes } from '../../types/tags-attributes-types';
-
 type BookmarkProps = {
   isFavorite: boolean;
-  bookmarkAttributes: BookmarkAttributes;
 }
 
-function Bookmark({ isFavorite, bookmarkAttributes }: BookmarkProps): JSX.Element {
+function Bookmark({ isFavorite }: BookmarkProps): JSX.Element {
   return (
-    <button
-      className={`button ${bookmarkAttributes.className} ${isFavorite ? bookmarkAttributes.classNameToActiv : ''}`} type="button"
-    >
-      <svg className="place-card__bookmark-icon" width={bookmarkAttributes.width} height={bookmarkAttributes.height}>
+    <button className={`place-card__bookmark-button ${isFavorite ? 'place-card__bookmark-button--active' : ''} button`} type="button">
+      <svg className="place-card__bookmark-icon " width="18" height="19">
         <use xlinkHref="#icon-bookmark"></use>
       </svg>
-      <span className="visually-hidden">{isFavorite ? 'In' : 'To'} bookmarks</span>
+      <span className="visually-hidden">
+        <span className="visually-hidden">{isFavorite ? 'In' : 'To'} bookmarks</span>
+      </span>
     </button>
   );
 }
