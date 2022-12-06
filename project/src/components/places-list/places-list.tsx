@@ -4,7 +4,7 @@ import { useAppSelector } from '../../hooks';
 import { getOffers } from '../../store/offers-data/selectors';
 import { TypeOffersSort } from '../../const';
 import { getSortType } from '../../store/sort-process/selectors';
-import _ from 'lodash';
+import { sortBy } from 'lodash';
 
 type OffersListProps = {
   pageType: string;
@@ -22,13 +22,13 @@ function OffersList({ pageType }: OffersListProps): JSX.Element {
         setOfferSort(offersNotSort);
         break;
       case TypeOffersSort.HighToLow:
-        setOfferSort(_.sortBy(offersNotSort, 'price').reverse());
+        setOfferSort(sortBy(offersNotSort, 'price').reverse());
         break;
       case TypeOffersSort.LowToHigh:
-        setOfferSort(_.sortBy(offersNotSort, 'price'));
+        setOfferSort(sortBy(offersNotSort, 'price'));
         break;
       case TypeOffersSort.TopRated:
-        setOfferSort(_.sortBy(offersNotSort, 'rating').reverse());
+        setOfferSort(sortBy(offersNotSort, 'rating').reverse());
         break;
     }
   }, [currentSortType, offersNotSort]);

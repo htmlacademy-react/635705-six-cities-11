@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Icon, Marker } from 'leaflet';
-import _ from 'lodash';
+import { isEqual } from 'lodash';
 import { Hotel, LocationType, CityType } from '../../types/hotel';
 import { IMG_MARKER_DEFAULT, IMG_MARKER_CURRENT } from '../../const';
 import 'leaflet/dist/leaflet.css';
@@ -41,7 +41,7 @@ function Map({ city, offers, selectedPoint, className }: MapProps): JSX.Element 
 
         marker
           .setIcon(
-            selectedPoint !== undefined && _.isEqual(point, selectedPoint)
+            selectedPoint !== undefined && isEqual(point, selectedPoint)
               ? currentCustomIcon
               : defaultCustomIcon
           )
