@@ -55,6 +55,7 @@ function PlaceCard({ card, pageType }: PlaceCardProps): JSX.Element {
 
   const mouseEnterHandler = useCallback(() => dispatch(getCurrentPoint({ offer: card, isAction: true })), [card, dispatch]);
   const mouseLeaveHandler = useCallback(() => dispatch(getCurrentPoint({ offer: card, isAction: false })), [card, dispatch]);
+  const mouseClickHandler = useCallback(() => dispatch(getCurrentPoint({ offer: card, isAction: false })), [card, dispatch]);
 
   return (
     <article
@@ -86,7 +87,7 @@ function PlaceCard({ card, pageType }: PlaceCardProps): JSX.Element {
         <h2 className="place-card__name">
           <Link
             to={generatePath(`${AppRoute.Room}/:id`, { id: id.toString() })}
-            onClick={() => dispatch(getCurrentPoint({ offer: card, isAction: false }))}
+            onClick={mouseClickHandler}
           >{title}
           </Link>
         </h2>
