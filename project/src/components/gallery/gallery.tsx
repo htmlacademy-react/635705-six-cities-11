@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 type GalleryProps = {
   images: string[];
 }
@@ -16,4 +18,4 @@ function Gallery({ images }: GalleryProps): JSX.Element {
   );
 }
 
-export default Gallery;
+export default memo(Gallery);

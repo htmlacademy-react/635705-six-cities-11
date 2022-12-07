@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { AppRoute } from '../../const';
 import { Hotel } from '../../types/hotel';
 import PlaceCard from '../place-card/place-card';
@@ -18,16 +19,15 @@ function LocationItem({ city, offersFavorList }: LocationItemProps): JSX.Element
         </div>
       </div>
       <div className="favorites__places">
-        {offersFavorList.filter((offer) => offer.city.name === city)
-          .map((offer) => (
-            <PlaceCard
-              key={offer.id}
-              card={offer}
-              pageType={AppRoute.Favorites}
-            />))}
+        {offersFavorList.map((offer) => offer.city.name === city && (
+          <PlaceCard
+            key={offer.id}
+            card={offer}
+            pageType={AppRoute.Favorites}
+          />))}
       </div>
     </li>
   );
 }
 
-export default LocationItem;
+export default memo(LocationItem);

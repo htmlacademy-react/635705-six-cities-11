@@ -1,33 +1,34 @@
-import {CommentType} from '../../types/comments';
+import { memo } from 'react';
+import { CommentType } from '../../types/comments';
 
 type commentProps = {
   comment: CommentType;
 }
 
-function ReviewsItem ({comment}: commentProps) : JSX.Element {
+function ReviewsItem({ comment: { user, rating, comment, date } }: commentProps): JSX.Element {
 
   return (
     <li className="reviews__item">
       <div className="reviews__user user">
         <div className="reviews__avatar-wrapper user__avatar-wrapper">
-          <img className="reviews__avatar user__avatar" src={comment.user.avatarUrl} width="54" height="54" alt="Reviews avatar" />
+          <img className="reviews__avatar user__avatar" src={user.avatarUrl} width="54" height="54" alt="Reviews avatar" />
         </div>
         <span className="reviews__user-name">
-          {comment.user.name}
+          {user.name}
         </span>
       </div>
       <div className="reviews__info">
         <div className="reviews__rating rating">
           <div className="reviews__stars rating__stars">
-            <span style={{width: `${20 * Math.round(comment.rating)}%`}}></span>
-            <span className="visually-hidden">{comment.rating}</span>
+            <span style={{ width: `${20 * Math.round(rating)}%` }}></span>
+            <span className="visually-hidden">{rating}</span>
           </div>
         </div>
         <p className="reviews__text">
-          {comment.comment}
+          {comment}
         </p>
-        <time className="reviews__time" dateTime={comment.date}>
-          {new Date(comment.date).toLocaleString('en-GB', { month: 'long', year: 'numeric' })}
+        <time className="reviews__time" dateTime={date}>
+          {new Date(date).toLocaleString('en-GB', { month: 'long', year: 'numeric' })}
         </time>
       </div>
     </li>
@@ -35,4 +36,4 @@ function ReviewsItem ({comment}: commentProps) : JSX.Element {
 
 }
 
-export default ReviewsItem;
+export default memo(ReviewsItem);

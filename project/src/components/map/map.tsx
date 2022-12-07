@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { Icon, Marker } from 'leaflet';
 import { isEqual } from 'lodash';
 import { Hotel, LocationType, CityType } from '../../types/hotel';
@@ -29,26 +29,24 @@ function Map({ city, offers, selectedPoint, className }: MapProps): JSX.Element 
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
 
-  const points: LocationType[] = offers.map((el) => el.location);
-
   useEffect(() => {
     if (map) {
-      points.forEach((point) => {
+      offers.forEach((point) => {
         const marker = new Marker({
-          lat: point.latitude,
-          lng: point.longitude
+          lat: point.location.latitude,
+          lng: point.location.longitude
         });
 
         marker
           .setIcon(
-            selectedPoint !== undefined && isEqual(point, selectedPoint)
+            selectedPoint !== undefined && isEqual(point.location, selectedPoint)
               ? currentCustomIcon
               : defaultCustomIcon
           )
           .addTo(map);
       });
     }
-  }, [map, points, selectedPoint]);
+  }, [map, offers, selectedPoint]);
 
   useEffect(() => {
     if (map) {
@@ -68,4 +66,4 @@ function Map({ city, offers, selectedPoint, className }: MapProps): JSX.Element 
   );
 }
 
-export default Map;
+export default memo(Map);

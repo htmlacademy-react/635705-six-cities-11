@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import LocationItem from '../location-item/location-item';
 import { Hotel } from '../../types/hotel';
 
@@ -7,7 +8,7 @@ type OffersListProps = {
 
 function FavoritesList({ offersFavorList }: OffersListProps): JSX.Element {
 
-  const cities = Array.from(new Set(offersFavorList.map((offer) => offer.city.name)));
+  const cities = useMemo(() => Array.from(new Set(offersFavorList.map((offer) => offer.city.name))), [offersFavorList]);
 
   return (
     <ul className="favorites__list">
@@ -21,4 +22,4 @@ function FavoritesList({ offersFavorList }: OffersListProps): JSX.Element {
   );
 }
 
-export default FavoritesList;
+export default memo(FavoritesList);

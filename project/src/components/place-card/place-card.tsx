@@ -1,13 +1,14 @@
-import { AppRoute } from '../../const';
+
+import { useState, useEffect, memo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { generatePath } from 'react-router';
 import Bookmark from '../bookmark/bookmark';
-import { Hotel } from '../../types/hotel';
-import { ucFirst } from '../../utils';
 import Mark from '../mark/mark';
 import RatingStars from '../rating-stars/ratind-stars';
+import { Hotel } from '../../types/hotel';
+import { ucFirst } from '../../utils';
+import { AppRoute } from '../../const';
 import { useAppDispatch } from '../../hooks';
-import { generatePath } from 'react-router';
 import { getCurrentPoint } from '../../store/offers-data/offers-data';
 
 type PlaceCardProps = {
@@ -52,12 +53,14 @@ function PlaceCard({ card, pageType }: PlaceCardProps): JSX.Element {
     }
   }, [pageType]);
 
+  const mouseEnterHandler = useCallback(() => dispatch(getCurrentPoint({ offer: card, isAction: true })), [card, dispatch]);
+  const mouseLeaveHandler = useCallback(() => dispatch(getCurrentPoint({ offer: card, isAction: false })), [card, dispatch]);
 
   return (
     <article
       className={`${settingPage.className}__card place-card`}
-      onMouseEnter={() => dispatch(getCurrentPoint({ offer: card, isAction: true }))}
-      onMouseLeave={() => dispatch(getCurrentPoint({ offer: card, isAction: false }))}
+      onMouseEnter={mouseEnterHandler}
+      onMouseLeave={mouseLeaveHandler}
     >
       <Mark isPremium={isPremium} className={'place-card__mark'} />
       <div
@@ -93,4 +96,4 @@ function PlaceCard({ card, pageType }: PlaceCardProps): JSX.Element {
   );
 }
 
-export default PlaceCard;
+export default memo(PlaceCard);

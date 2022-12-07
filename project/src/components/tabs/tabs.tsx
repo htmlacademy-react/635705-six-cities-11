@@ -1,4 +1,4 @@
-import { SyntheticEvent } from 'react';
+import { SyntheticEvent, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { CITIES, AppRoute } from '../../const';
 import { useAppDispatch } from '../../hooks';
@@ -12,12 +12,12 @@ type TabsProps = {
 function Tabs({ cityName }: TabsProps): JSX.Element {
   const dispatch = useAppDispatch();
 
-  const handleCityClick = (evt: SyntheticEvent<HTMLElement>) => {
+  const cityClickHandler = useCallback((evt: SyntheticEvent<HTMLElement>) => {
     evt.preventDefault();
     const currentCity: string = evt.currentTarget.innerText;
     dispatch(changeCity({ currentCity }));
     dispatch(resetSort());
-  };
+  }, [dispatch]);
 
   return (
     <div className="tabs">
@@ -31,7 +31,7 @@ function Tabs({ cityName }: TabsProps): JSX.Element {
                 <Link
                   className={`locations__item-link tabs__item ${activeClass}`}
                   to={AppRoute.Main}
-                  onClick={handleCityClick}
+                  onClick={cityClickHandler}
                 >
                   <span>{city}</span>
                 </Link>

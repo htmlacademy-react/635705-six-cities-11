@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 type InsideProps = {
   goods: string[];
 }
@@ -17,4 +19,4 @@ function Inside({ goods }: InsideProps): JSX.Element {
   );
 }
 
-export default Inside;
+export default memo(Inside);

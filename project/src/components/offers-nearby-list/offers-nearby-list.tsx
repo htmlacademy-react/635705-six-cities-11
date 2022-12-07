@@ -1,5 +1,6 @@
 import PlaceCard from '../place-card/place-card';
 import { Hotel } from '../../types/hotel';
+import { memo } from 'react';
 
 type OffersListProps = {
   offersList: Hotel[];
@@ -11,7 +12,7 @@ function OfferNearbyList({ offersList, pageType, cityName }: OffersListProps): J
 
   return (
     <div className="near-places__list places__list">
-      {offersList.filter((offer) => offer.city.name === cityName).map((offer) => (
+      {offersList.map((offer) => offer.city.name === cityName && (
         <PlaceCard
           key={offer.id}
           card={offer}
@@ -23,4 +24,4 @@ function OfferNearbyList({ offersList, pageType, cityName }: OffersListProps): J
   );
 }
 
-export default OfferNearbyList;
+export default memo(OfferNearbyList);

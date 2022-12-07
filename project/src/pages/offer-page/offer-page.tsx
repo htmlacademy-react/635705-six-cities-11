@@ -17,6 +17,7 @@ import { useAppSelector } from '../../hooks';
 import { getOffers } from '../../store/offers-data/selectors';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
 import { AppRoute, AuthorizationStatus, MapСategory } from '../../const';
+import { useMemo } from 'react';
 
 
 function OfferPage(): JSX.Element {
@@ -26,7 +27,7 @@ function OfferPage(): JSX.Element {
   const authorizationStatus = useAppSelector(getAuthorizationStatus);
   const currentOffer = offersForCity.find((el) => el.id.toString() === params.id) as Hotel;
   const { id, images, city, isFavorite, isPremium, title, rating, type, bedrooms, maxAdults, price, goods, host, description } = currentOffer;
-  const OffersNearby = offersForCity.filter((el) => el.id !== id);
+  const offersNearby = useMemo(() => offersForCity.filter((el) => el.id !== id), [id, offersForCity]);
 
   if (!currentOffer) {
     return <NotFoundPage />;
@@ -110,7 +111,7 @@ function OfferPage(): JSX.Element {
           <section className="near-places places">
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
             <OfferNearbyList
-              offersList={OffersNearby}
+              offersList={offersNearby}
               pageType={AppRoute.Room}
               cityName={city.name}
             />
