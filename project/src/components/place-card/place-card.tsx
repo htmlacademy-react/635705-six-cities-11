@@ -1,51 +1,83 @@
+
+import { useState, useEffect, memo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { BookmarkAttributes, PlaceCardAttributes} from '../../types/tags-attributes-types';
+import { generatePath } from 'react-router';
 import Bookmark from '../bookmark/bookmark';
-import { Hotel } from '../../types/hotel';
-import { ucFirst } from '../../utils';
 import Mark from '../mark/mark';
 import RatingStars from '../rating-stars/ratind-stars';
+import { Hotel } from '../../types/hotel';
+import { ucFirst } from '../../utils';
+import { AppRoute } from '../../const';
+import { useAppDispatch } from '../../hooks';
+import { getCurrentPoint } from '../../store/offers-data/offers-data';
 
-const bookmarkAttributesPlaceCard: BookmarkAttributes = {
-  className: 'place-card__bookmark-button',
-  width: 18,
-  height: 19,
-  classNameToActiv: 'place-card__bookmark-button--active'
+type PlaceCardProps = {
+  card: Hotel;
+  pageType: string;
 };
 
-export type PlaceCardProps = {
-  placeCardAttributes: PlaceCardAttributes;
-  offer: Hotel;
-  onMouseMove?: () => void;
-  onMouseOut?: () => void;
-}
+function PlaceCard({ card, pageType }: PlaceCardProps): JSX.Element {
+  const dispatch = useAppDispatch();
 
-function PlaceCard({placeCardAttributes, offer, onMouseMove, onMouseOut}: PlaceCardProps): JSX.Element {
-  const { isPremium, isFavorite, previewImage, price, rating, type, id, title } = offer;
-  const { card, imageWrapper, cardInfo, imgWidth, imgHeight } = placeCardAttributes;
+  const { isPremium, isFavorite, previewImage, price, rating, type, id, title } = card;
+
+  const [settingPage, setSettingPage] = useState({
+    widthImg: '260',
+    heightImg: '200',
+    className: ''
+  });
+
+  useEffect(() => {
+    switch (pageType) {
+      case AppRoute.Main:
+        setSettingPage({
+          widthImg: '260',
+          heightImg: '200',
+          className: 'cities'
+        });
+        break;
+      case AppRoute.Favorites:
+        setSettingPage({
+          widthImg: '150',
+          heightImg: '110',
+          className: 'favorites'
+        });
+        break;
+      case AppRoute.Room:
+        setSettingPage({
+          widthImg: '260',
+          heightImg: '200',
+          className: 'near-places'
+        });
+        break;
+    }
+  }, [pageType]);
+
+  const mouseEnterHandler = useCallback(() => dispatch(getCurrentPoint({ offer: card, isAction: true })), [card, dispatch]);
+  const mouseLeaveHandler = useCallback(() => dispatch(getCurrentPoint({ offer: card, isAction: false })), [card, dispatch]);
+  const mouseClickHandler = useCallback(() => dispatch(getCurrentPoint({ offer: card, isAction: false })), [card, dispatch]);
+
   return (
     <article
-      className={`${card} place-card`}
-      onMouseMove={onMouseMove}
-      onMouseOut={onMouseOut}
+      className={`${settingPage.className}__card place-card`}
+      onMouseEnter={mouseEnterHandler}
+      onMouseLeave={mouseLeaveHandler}
     >
       <Mark isPremium={isPremium} className={'place-card__mark'} />
-      <div className={`${imageWrapper} place-card__image-wrapper`}>
-        <Link to={`/offer/${id}`}>
-          <img className="place-card__image" src={previewImage}
-            width={imgWidth}
-            height={imgHeight}
-            alt={type}
-          />
-        </Link>
+      <div
+        className={`${settingPage.className}__image-wrapper place-card__image-wrapper`}
+      >
+        <a href="/">
+          <img className="place-card__image" src={previewImage} width={settingPage.widthImg} height={settingPage.heightImg} alt="Place" />
+        </a>
       </div>
-      <div className={`place-card__info ${cardInfo}`}>
+      <div className={`${settingPage.className === 'favorites' ? 'favorites__card-info ' : ''} place-card__info`}>
         <div className="place-card__price-wrapper">
           <div className="place-card__price">
             <b className="place-card__price-value">&euro;{price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
-          <Bookmark isFavorite={isFavorite} bookmarkAttributes={bookmarkAttributesPlaceCard}/>
+          <Bookmark isFavorite={isFavorite} />
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">
@@ -53,7 +85,11 @@ function PlaceCard({placeCardAttributes, offer, onMouseMove, onMouseOut}: PlaceC
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`/offer/${id}`}>{title}</Link>
+          <Link
+            to={generatePath(`${AppRoute.Room}/:id`, { id: id.toString() })}
+            onClick={mouseClickHandler}
+          >{title}
+          </Link>
         </h2>
         <p className="place-card__type">{ucFirst(type)}</p>
       </div>
@@ -61,4 +97,4 @@ function PlaceCard({placeCardAttributes, offer, onMouseMove, onMouseOut}: PlaceC
   );
 }
 
-export default PlaceCard;
+export default memo(PlaceCard);

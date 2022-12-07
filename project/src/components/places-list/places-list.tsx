@@ -1,35 +1,50 @@
-import { PlaceCardAttributes } from '../../types/tags-attributes-types';
+import { useState, useEffect } from 'react';
 import PlaceCard from '../place-card/place-card';
-import { Hotel } from '../../types/hotel';
+import { useAppSelector } from '../../hooks';
+import { getOffers } from '../../store/offers-data/selectors';
+import { TypeOffersSort } from '../../const';
+import { getSortType } from '../../store/sort-process/selectors';
+import { sortBy } from 'lodash';
 
-const PlaceCardFavorites: PlaceCardAttributes = {
-  card: 'cities__card',
-  imageWrapper: 'cities__image-wrapper',
-  cardInfo: '',
-  imgWidth: 260,
-  imgHeight: 200
-};
-
-type PlacesListProps = {
-  offers: Hotel[];
-  classNameAttribute: string;
-  setSelectedPoint: (id?: Hotel) => void;
+type OffersListProps = {
+  pageType: string;
 }
 
-function PlacesList({ offers, classNameAttribute, setSelectedPoint }: PlacesListProps): JSX.Element {
+function OffersList({ pageType }: OffersListProps): JSX.Element {
+
+  const offersNotSort = useAppSelector(getOffers);
+  const currentSortType = useAppSelector(getSortType);
+  const [offerSort, setOfferSort] = useState(offersNotSort);
+
+  useEffect(() => {
+    switch (currentSortType) {
+      case TypeOffersSort.Default:
+        setOfferSort(offersNotSort);
+        break;
+      case TypeOffersSort.HighToLow:
+        setOfferSort(sortBy(offersNotSort, 'price').reverse());
+        break;
+      case TypeOffersSort.LowToHigh:
+        setOfferSort(sortBy(offersNotSort, 'price'));
+        break;
+      case TypeOffersSort.TopRated:
+        setOfferSort(sortBy(offersNotSort, 'rating').reverse());
+        break;
+    }
+  }, [currentSortType, offersNotSort]);
+
   return (
-    <div className={classNameAttribute}>
-      {offers.map((offer) => (
+    <div className="cities__places-list places__list tabs__content">
+      {offerSort.map((offer) => (
         <PlaceCard
-          offer={offer}
           key={offer.id}
-          onMouseMove={() => setSelectedPoint(offer)}
-          onMouseOut={() => setSelectedPoint(undefined)}
-          placeCardAttributes={PlaceCardFavorites}
+          card={offer}
+          pageType={pageType}
         />
-      ))}
+      )
+      )}
     </div>
   );
 }
 
-export default PlacesList;
+export default OffersList;

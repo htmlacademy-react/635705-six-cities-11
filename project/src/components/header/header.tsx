@@ -4,10 +4,13 @@ import { Link } from 'react-router-dom';
 import Logo from '../logo/logo';
 import { logoutAction } from '../../store/api-actions';
 import { SyntheticEvent } from 'react';
+import { getAuthInfo, getAuthorizationStatus } from '../../store/user-process/selectors';
 
 function Header(): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
   const dispatch = useAppDispatch();
+
+  const authInfo = useAppSelector(getAuthInfo);
 
   return (
     <header className="header">
@@ -25,7 +28,7 @@ function Header(): JSX.Element {
                   {authorizationStatus === AuthorizationStatus.Auth
                     ? (
                       <>
-                        <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
+                        <span className="header__user-name user__name">{authInfo?.email}</span>
                         <span className="header__favorite-count">3</span>
                       </>
                     )

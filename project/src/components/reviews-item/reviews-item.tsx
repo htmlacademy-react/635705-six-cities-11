@@ -1,13 +1,11 @@
-import { Comment } from '../../types/comment';
-import RatingStars from '../rating-stars/ratind-stars';
+import { memo } from 'react';
+import { CommentType } from '../../types/comments';
 
-type ReviewProps = {
-  review: Comment;
+type commentProps = {
+  comment: CommentType;
 }
 
-function ReviewItem({review}: ReviewProps): JSX.Element {
-
-  const { comment, date, rating, user } = review;
+function ReviewsItem({ comment: { user, rating, comment, date } }: commentProps): JSX.Element {
 
   return (
     <li className="reviews__item">
@@ -22,16 +20,20 @@ function ReviewItem({review}: ReviewProps): JSX.Element {
       <div className="reviews__info">
         <div className="reviews__rating rating">
           <div className="reviews__stars rating__stars">
-            <RatingStars rating={rating}/>
+            <span style={{ width: `${20 * Math.round(rating)}%` }}></span>
+            <span className="visually-hidden">{rating}</span>
           </div>
         </div>
         <p className="reviews__text">
           {comment}
         </p>
-        <time className="reviews__time" dateTime={date}>April 2019</time>
+        <time className="reviews__time" dateTime={date}>
+          {new Date(date).toLocaleString('en-GB', { month: 'long', year: 'numeric' })}
+        </time>
       </div>
     </li>
   );
+
 }
 
-export default ReviewItem;
+export default memo(ReviewsItem);
