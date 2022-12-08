@@ -2,13 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NameSpace } from '../../const';
 import { OffersData } from '../../types/state';
 import { Hotel } from '../../types/hotel';
-import { fetchOffersAction } from '../api-actions';
+import { changeFavoriteOfferAction, fetchOffersAction } from '../api-actions';
 
 const initialState: OffersData = {
   allOffers: [],
   isOffersDataLoading: false,
   hasError: false,
-
   selectedCityName: 'Paris',
   offers: [],
   offersNotSort: [],
@@ -29,6 +28,13 @@ export const offersData = createSlice({
       const { offer, isAction } = action.payload;
       state.selectedPoint = isAction ? offer.location : null;
     },
+    changeFavoriteStatus: (state, action: PayloadAction<{ hotelId: number; isFavorite: boolean }>) => {
+      const currentOffer = state.offers.find((offer) => offer.id === action.payload.hotelId);
+
+      if (currentOffer) {
+        currentOffer.isFavorite = action.payload.isFavorite;
+      }
+    },
   },
   extraReducers(builder) {
     builder
@@ -44,8 +50,17 @@ export const offersData = createSlice({
       .addCase(fetchOffersAction.rejected, (state) => {
         state.isOffersDataLoading = false;
         state.hasError = true;
+      })
+      .addCase(changeFavoriteOfferAction.fulfilled, (state, action) => {
+        const currentOfferIndex = state.offersFavotiteList.findIndex((offer) => offer.id === action.payload.id);
+        if (currentOfferIndex > -1) {
+          state.offersFavotiteList[currentOfferIndex] = action.payload;
+          state.offersFavotiteList = state.offersFavotiteList.filter((offer) => offer.isFavorite);
+        } else {
+          state.offersFavotiteList.push(action.payload);
+        }
       });
   }
 });
 
-export const { changeCity, getCurrentPoint } = offersData.actions;
+export const { changeCity, getCurrentPoint, changeFavoriteStatus } = offersData.actions;

@@ -50,7 +50,7 @@ function OfferPage(): JSX.Element {
                   {title}
                 </h1>
 
-                <Bookmark isFavorite={isFavorite} />
+                <Bookmark id={id} isFavorite={isFavorite} />
 
               </div>
               <div className="property__rating rating">

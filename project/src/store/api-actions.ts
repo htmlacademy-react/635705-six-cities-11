@@ -10,6 +10,8 @@ import { saveToken, dropToken } from '../services/token';
 import { redirectToRoute } from './action';
 import { loadAuthInfo } from '../store/user-process/user-process';
 import { loadCommentsNew } from '../store/comments-data/comments-data';
+import { FavoriteOfferData } from '../types/favorite-offer-data';
+import { changeFavoriteStatus } from './offers-data/offers-data';
 
 export const fetchOffersAction = createAsyncThunk<Hotel[], undefined, {
   dispatch: AppDispatch;
@@ -86,4 +88,17 @@ export const sendNewComment = createAsyncThunk<void, CommentSendType, {
     const { data } = await api.post<CommentType[]>(`${APIRoute.Reviews}/${offerID}`, { comment, rating });
     dispatch(loadCommentsNew({ comments: data }));
   }
+);
+
+export const changeFavoriteOfferAction = createAsyncThunk<Hotel, FavoriteOfferData, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'user/favoriteOffer',
+  async ({ hotelId, isFavorite }, { dispatch, extra: api }) => {
+    const response = await api.post<Hotel>(APIRoute.FavoriteOffer.replace('{hotelId}', String(hotelId)).replace('{status}', String(Number(isFavorite))));
+    dispatch(changeFavoriteStatus({ hotelId, isFavorite }));
+    return response.data;
+  },
 );
