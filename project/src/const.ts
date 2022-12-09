@@ -44,7 +44,9 @@ export enum APIRoute {
   Offers = '/hotels',
   Reviews = '/comments',
   Login = '/login',
-  Logout = '/logout'
+  Logout = '/logout',
+  FavoriteOffers = '/favorite/',
+  FavoriteOffer = '/favorite/{hotelId}/{status}',
 }
 
 export const RATING_STARS = ['1', '2', '3', '4', '5'];
