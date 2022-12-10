@@ -1,6 +1,9 @@
 import { memo } from 'react';
-import { useAppDispatch } from '../../hooks';
+import { useNavigate } from 'react-router-dom';
+import { AppRoute, AuthorizationStatus } from '../../const';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { changeFavoriteOfferAction } from '../../store/api-actions';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
 
 type BookmarkProps = {
   id: number;
@@ -9,9 +12,15 @@ type BookmarkProps = {
 
 function Bookmark({ isFavorite, id }: BookmarkProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
+  const navigate = useNavigate();
 
   const addFavoriteHandler = () => {
-    dispatch(changeFavoriteOfferAction({ hotelId: id, isFavorite: !isFavorite }));
+    if (authorizationStatus === AuthorizationStatus.NoAuth) {
+      navigate(AppRoute.Login);
+    } else {
+      dispatch(changeFavoriteOfferAction({ hotelId: id, isFavorite: !isFavorite }));
+    }
   };
 
   return (
