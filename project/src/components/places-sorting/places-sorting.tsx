@@ -1,42 +1,36 @@
-import { MouseEvent } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { TypeOffersSortArray } from '../../const';
-import { getSortType, getSortView } from '../../store/sort-process/selectors';
-import { sortOffersType, sortMenuView } from '../../store/sort-process/sort-process';
+import { useState, memo } from 'react';
+import { SortType } from '../../const';
+import SortItem from '../sort-item/sort-item';
 
+type PlacesSortingProps = {
+  activeSortItem: string;
+  setActiveSortItem: (sortType: string) => void;
+}
 
-function PlacesSorting(): JSX.Element {
-
-  const currentSortType = useAppSelector(getSortType);
-  const currentSortView = useAppSelector(getSortView);
-  const dispatch = useAppDispatch();
-
-  const handleChange = (event: MouseEvent<HTMLLIElement, globalThis.MouseEvent>) => {
-    dispatch(sortOffersType({ currentType: event.currentTarget.innerText }));
+function PlacesSorting({ activeSortItem, setActiveSortItem }: PlacesSortingProps): JSX.Element {
+  const [isActive, setActive] = useState<boolean>(false);
+  const selectSortType = (sortType: string) => {
+    setActiveSortItem(sortType);
+    setActive(!isActive);
   };
+
   return (
-    <form className="places__sorting" action="#" method="get">
+    <div className="places__sorting">
       <span className="places__sorting-caption">Sort by</span>
-      <span className="places__sorting-type" tabIndex={0}>
-        {currentSortType}
-        <svg className="places__sorting-arrow" width="7" height="4" onClick={() => dispatch(sortMenuView())}>
+      <span className="places__sorting-type"
+        onMouseDown={() => setActive(!isActive)}
+        tabIndex={0}
+      >
+        {activeSortItem}
+        <svg className="places__sorting-arrow" width="7" height="4">
           <use xlinkHref="#icon-arrow-select"></use>
         </svg>
       </span>
-      <ul className={`places__options places__options--custom places__options--${currentSortView}`}>
-        {TypeOffersSortArray.map((sortType) => (
-          <li
-            key={sortType}
-            className={`places__option ${sortType === currentSortType ? 'places__option--active' : ''} `}
-            tabIndex={0}
-            onClick={handleChange}
-          >
-            {sortType}
-          </li>)
-        )}
+      <ul className={`places__options places__options--custom ${isActive ? 'places__options--opened' : ''}`}>
+        {Array.from(Object.values(SortType)).map((item) => <SortItem key={item} sortType={item} activeSortItem={activeSortItem} selectSortType={selectSortType} />)}
       </ul>
-    </form>);
+    </div>
+  );
 }
 
-
-export default PlacesSorting;
+export default memo(PlacesSorting);

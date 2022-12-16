@@ -1,25 +1,28 @@
-import { memo, useMemo } from 'react';
-import LocationItem from '../location-item/location-item';
+import { Link } from 'react-router-dom';
+import PlacesList from '../places-list/places-list';
 import { Hotel } from '../../types/hotel';
+import { PageType, AppRoute } from '../../const';
 
-type OffersListProps = {
-  offersFavorList: Hotel[];
+type FavoritesListProps = {
+  offers: Hotel[];
+  city: string;
 }
 
-function FavoritesList({ offersFavorList }: OffersListProps): JSX.Element {
-
-  const cities = useMemo(() => Array.from(new Set(offersFavorList.map((offer) => offer.city.name))), [offersFavorList]);
-
+function FavoritesList({ offers, city }: FavoritesListProps): JSX.Element {
   return (
-    <ul className="favorites__list">
-      {cities.map((city) => (
-        <LocationItem
-          key={city}
-          city={city}
-          offersFavorList={offersFavorList}
-        />))}
-    </ul>
+    <li className="favorites__locations-items">
+      <div className="favorites__locations locations locations--current">
+        <div className="locations__item">
+          <Link className="locations__item-link" to={AppRoute.Main}>
+            <span>{city}</span>
+          </Link>
+        </div>
+      </div>
+      <div className="favorites__places">
+        <PlacesList offers={offers} pageType={PageType.Favorite} />
+      </div>
+    </li>
   );
 }
 
-export default memo(FavoritesList);
+export default FavoritesList;

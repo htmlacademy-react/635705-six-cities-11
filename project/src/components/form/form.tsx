@@ -1,69 +1,77 @@
-import { memo, useCallback } from 'react';
-import { useState, FormEvent } from 'react';
-import RatingInputs from '../rating-inputs/rating-inputs';
-import { useAppDispatch } from '../../hooks';
-import { sendNewComment } from '../../store/api-actions';
-import { RATING_STARS } from '../../const';
+import { ChangeEvent, FormEvent, useState, useEffect } from 'react';
+import { FormData } from '../../types/comments';
+import { RatingData, LengthComment } from '../../const';
+import { useAppSelector, useAppDispatch } from '../../hooks';
+import { setCommentAction } from '../../store/api-actions';
+import { getIsCommentLoading, getIsCommentLoadSuccess } from '../../store/offers-data/selectors';
+import ReviewRatingStar from '../review-rating-star/review-rating-star';
 
-type FormProps = {
-  offerID: number;
-}
+type ReviewFormProps = {
+  id: number;
+};
 
-function Form({ offerID }: FormProps): JSX.Element {
-  const [commentData, setCommentData] = useState({ comment: '', rating: 0 });
-  const [currentChecked, setCurrentChecked] = useState<string | null>(null);
+const defaultFormData = {
+  comment: '',
+  rating: null
+};
 
-  const commentChangeHandler = useCallback((evt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = evt.target;
-    setCommentData({ ...commentData, [name]: value });
-    evt.target.setAttribute('checked', 'true');
-    if (name === 'rating') {
-      setCurrentChecked(value);
-    }
-  }, [commentData]);
-
+function ReviewForm({ id }: ReviewFormProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const isCommentLoading = useAppSelector(getIsCommentLoading);
+  const isCommentLoadSuccess = useAppSelector(getIsCommentLoadSuccess);
+  const [formData, setFormData] = useState<FormData>(defaultFormData);
 
-  const isFormValid = commentData.comment.length >= 50 && commentData.comment.length <= 300 && commentData.rating !== 0;
-
-  const submitHendler = (evt: FormEvent<HTMLFormElement>) => {
-    evt.preventDefault();
-    if (isFormValid) {
-      dispatch(sendNewComment({
-        comment: commentData.comment,
-        rating: commentData.rating,
-        offerID: offerID,
-      }));
-      setCommentData({ comment: '', rating: 0 });
-      setCurrentChecked(null);
+  useEffect(() => {
+    if (isCommentLoadSuccess) {
+      setFormData(defaultFormData);
     }
+  }, [isCommentLoadSuccess]);
+
+  const isValidForm = (LengthComment.Min < formData.comment.length && formData.comment.length < LengthComment.Max && formData.rating !== null);
+  const isFormDisabled = !isValidForm || isCommentLoading;
+
+  const handleFormChange = ({ target }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    const { name, value } = target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleFormSubmit = (evt: FormEvent) => {
+    evt.preventDefault();
+    if (isValidForm) { dispatch(setCommentAction({ id, formData })); }
   };
 
   return (
-    <form className="reviews__form form" action="" method="post" onSubmit={submitHendler}>
+    <form className="reviews__form form" action="" onSubmit={(evt) => { handleFormSubmit(evt); }}>
       <label className="reviews__label form__label" htmlFor="review">Your review</label>
       <div className="reviews__rating-form form__rating">
-        {[...RATING_STARS].reverse().map((item) => (<RatingInputs key={item} item={item} currentChecked={currentChecked} commentChangeHandler={commentChangeHandler} />))}
+        {
+          RatingData.map((data) =>
+            <ReviewRatingStar key={data.value} ratingStar={data} isChecked={data.value === Number(formData.rating)} formDisabled={isCommentLoading} handleFormChange={handleFormChange} />
+          )
+        }
       </div>
-      <textarea
-        className="reviews__textarea form__textarea"
+      <textarea className="reviews__textarea form__textarea"
         id="comment"
         name="comment"
-        value={commentData.comment}
-        onChange={commentChangeHandler}
+        maxLength={LengthComment.Max}
         placeholder="Tell how was your stay, what you like and what can be improved"
-      >
-      </textarea>
+        onChange={handleFormChange}
+        disabled={isCommentLoading}
+        value={formData.comment}
+      />
       <div className="reviews__button-wrapper">
         <p className="reviews__help">
           To submit review please make sure to set <span className="reviews__star">rating</span> and describe your stay with at least <b className="reviews__text-amount">50 characters</b>.
         </p>
-        <button className="reviews__submit form__submit button" type="submit" disabled={!isFormValid}>
-          Submit
+        <button
+          className="reviews__submit form__submit button"
+          type="submit"
+          disabled={isFormDisabled}
+        >Submit
         </button>
       </div>
     </form>
   );
 }
 
-export default memo(Form);
+export default ReviewForm;

@@ -1,47 +1,22 @@
-import { SyntheticEvent, useCallback } from 'react';
-import { Link } from 'react-router-dom';
-import { CITIES, AppRoute } from '../../const';
-import { useAppDispatch } from '../../hooks';
-import { changeCity } from '../../store/offers-data/offers-data';
-import { resetSort } from '../../store/sort-process/sort-process';
+import { memo } from 'react';
+import { CityType } from '../../const';
+import CityItem from '../city-item/city-item';
 
 type TabsProps = {
-  cityName: string;
+  selectedCity: string;
+  setCity: (city: string) => void;
 }
 
-function Tabs({ cityName }: TabsProps): JSX.Element {
-  const dispatch = useAppDispatch();
-
-  const cityClickHandler = useCallback((evt: SyntheticEvent<HTMLElement>) => {
-    evt.preventDefault();
-    const currentCity: string = evt.currentTarget.innerText;
-    dispatch(changeCity({ currentCity }));
-    dispatch(resetSort());
-  }, [dispatch]);
-
+function Tabs({ selectedCity, setCity }: TabsProps): JSX.Element {
   return (
     <div className="tabs">
       <section className="locations container">
         <ul className="locations__list tabs__list">
-          {CITIES.map((city) => {
-            const activeClass = city === cityName ? 'tabs__item--active' : '';
-
-            return (
-              <li className="locations__item" key={city}>
-                <Link
-                  className={`locations__item-link tabs__item ${activeClass}`}
-                  to={AppRoute.Main}
-                  onClick={cityClickHandler}
-                >
-                  <span>{city}</span>
-                </Link>
-              </li>
-            );
-          })}
+          {Array.from(Object.values(CityType)).map((city) => <CityItem key={city} city={city} selectedCity={selectedCity} setCity={setCity} />)}
         </ul>
       </section>
     </div>
   );
 }
 
-export default Tabs;
+export default memo(Tabs);

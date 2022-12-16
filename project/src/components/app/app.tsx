@@ -8,27 +8,19 @@ import PrivateRoute from '../private-route/private-route';
 import LoadingScreen from '../../pages/loading-screen/loading-screen';
 import { AppRoute } from '../../const';
 import { useAppSelector } from '../../hooks';
-import ErrorScreen from '../../pages/error-screen/error-screen';
 import HistoryRouter from '../history-route/history-route';
 import browserHistory from '../../browser-history';
-import { getAuthorizationStatus, getAuthCheckedStatus } from '../../store/user-process/selectors';
-import { getOffersDataLoadingStatus, getErrorStatus } from '../../store/offers-data/selectors';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { getOffersDataLoadingStatus } from '../../store/offers-data/selectors';
 
 function App(): JSX.Element {
   const isOffersDataLoading = useAppSelector(getOffersDataLoadingStatus);
   const authorizationStatus = useAppSelector(getAuthorizationStatus);
-  const isAuthChecked = useAppSelector(getAuthCheckedStatus);
-  const hasError = useAppSelector(getErrorStatus);
 
-  if (!isAuthChecked || isOffersDataLoading) {
+  if (isOffersDataLoading) {
     return (
       <LoadingScreen />
     );
-  }
-
-  if (hasError) {
-    return (
-      <ErrorScreen />);
   }
 
   return (
@@ -60,12 +52,10 @@ function App(): JSX.Element {
             </PrivateRoute>
           }
         />
-        <Route path={AppRoute.Room}>
-          <Route
-            path=':id'
-            element={<OfferPage />}
-          />
-        </Route>
+        <Route
+          path={AppRoute.Room}
+          element={<OfferPage />}
+        />
         <Route
           path='*'
           element={<NotFoundPage />}

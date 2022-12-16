@@ -1,50 +1,23 @@
-import { useState, useEffect } from 'react';
-import PlaceCard from '../place-card/place-card';
-import { useAppSelector } from '../../hooks';
-import { getOffers } from '../../store/offers-data/selectors';
-import { TypeOffersSort } from '../../const';
-import { getSortType } from '../../store/sort-process/selectors';
-import { sortBy } from 'lodash';
+import { memo, useMemo } from 'react';
+import { Hotel } from '../../types/hotel';
+import { getSortedOffers } from '../../utils';
+import Card from '../card/card';
 
-type OffersListProps = {
+type PlacesListProps = {
+  offers: Hotel[];
+  activeSortItem?: string;
   pageType: string;
+  setActiveCard?: ((offer: Hotel | undefined) => void) | undefined;
 }
 
-function OffersList({ pageType }: OffersListProps): JSX.Element {
-
-  const offersNotSort = useAppSelector(getOffers);
-  const currentSortType = useAppSelector(getSortType);
-  const [offerSort, setOfferSort] = useState(offersNotSort);
-
-  useEffect(() => {
-    switch (currentSortType) {
-      case TypeOffersSort.Default:
-        setOfferSort(offersNotSort);
-        break;
-      case TypeOffersSort.HighToLow:
-        setOfferSort(sortBy(offersNotSort, 'price').reverse());
-        break;
-      case TypeOffersSort.LowToHigh:
-        setOfferSort(sortBy(offersNotSort, 'price'));
-        break;
-      case TypeOffersSort.TopRated:
-        setOfferSort(sortBy(offersNotSort, 'rating').reverse());
-        break;
-    }
-  }, [currentSortType, offersNotSort]);
+function PlacesList({ offers, activeSortItem, pageType, setActiveCard }: PlacesListProps): JSX.Element {
+  const sortedOffers = useMemo(() => getSortedOffers(offers, activeSortItem || ''), [offers, activeSortItem]);
 
   return (
     <div className="cities__places-list places__list tabs__content">
-      {offerSort.map((offer) => (
-        <PlaceCard
-          key={offer.id}
-          card={offer}
-          pageType={pageType}
-        />
-      )
-      )}
+      {sortedOffers.map((offer: Hotel) => <Card key={offer.id} offer={offer} setActiveCard={setActiveCard} pageType={pageType} />)}
     </div>
   );
 }
 
-export default OffersList;
+export default memo(PlacesList);

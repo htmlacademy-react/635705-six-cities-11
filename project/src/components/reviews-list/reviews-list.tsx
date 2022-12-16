@@ -1,46 +1,32 @@
-import ReviewsItem from '../../components/reviews-item/reviews-item';
-import LoadingScreen from '../../pages/loading-screen/loading-screen';
-import ErrorScreen from '../../pages/error-screen/error-screen';
-import { useAppSelector } from '../../hooks';
-import { store } from '../../store';
-import { fetchCommentsAction } from '../../store/api-actions';
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { getCommentsDataLoadingStatus, getComments, getErrorStatusComments } from '../../store/comments-data/selectors';
-import { AppRoute } from '../../const';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { fetchCommentsAction } from '../../store/api-actions';
+import { getComments } from '../../store/offers-data/selectors';
+import { MAX_REVIEWS_COUNT } from '../../const';
+import { sortReviews } from '../../utils';
+import ReviewItem from '../../components/review-item/review-item';
 
-function ReviewsList(): JSX.Element {
-  const isCommentsLoading = useAppSelector(getCommentsDataLoadingStatus);
-  const hasErrorComments = useAppSelector(getErrorStatusComments);
-  const params = useParams();
-  useEffect(() => {
-    if (params.id) {
-      store.dispatch(fetchCommentsAction(params.id.toString()));
-    }
-  }, [params.id]);
-
-  const commentsByOfferAll = useAppSelector(getComments);
-  const commentsByOffer = commentsByOfferAll.slice(0, 10);
-  const countComments = commentsByOfferAll ? commentsByOfferAll.length : 0;
-
-
-  if (isCommentsLoading) {
-    return (<LoadingScreen />);
-  }
-  if (hasErrorComments) {
-    return (<ErrorScreen pageType={AppRoute.Room} paramsId={params.id} />);
-  }
-
-  return (
-    <div>
-      <h2 className="reviews__title">Reviews · <span className="reviews__amount">{countComments}</span></h2>
-      <ul className="reviews__list">
-        {commentsByOffer &&
-          commentsByOffer.map((comment) => <ReviewsItem key={comment.id} comment={comment} />)}
-      </ul>
-    </div>
-  );
+type ReviewsListProps = {
+  id: number;
 }
 
+function ReviewsList({ id }: ReviewsListProps): JSX.Element {
+  const dispatch = useAppDispatch();
+  const reviews = useAppSelector(getComments);
+  const sortedReviews = reviews.slice().sort(sortReviews);
+
+  useEffect(() => {
+    dispatch(fetchCommentsAction(id));
+  }, [dispatch, id]);
+
+  return (
+    <>
+      <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">{reviews.length}</span></h2>
+      <ul className="reviews__list">
+        {sortedReviews.slice(0, MAX_REVIEWS_COUNT).map((review) => <ReviewItem key={review.id} review={review} />)}
+      </ul>
+    </>
+  );
+}
 
 export default ReviewsList;

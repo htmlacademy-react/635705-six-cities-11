@@ -2,10 +2,9 @@ export enum AppRoute {
   Main = '/',
   Login = '/login',
   Favorites = '/favorites',
-  Room = '/offer'
+  Room = '/offer/:id',
+  NotFound = '*',
 }
-
-export const MAX_RATING = 5;
 
 export enum AuthorizationStatus {
   Auth = 'AUTH',
@@ -13,48 +12,116 @@ export enum AuthorizationStatus {
   Unknown = 'UNKNOWN',
 }
 
-export enum MapСategory {
-  Property = 'property__map',
-  Cities = 'cities__map',
+export enum PageType {
+  Main = 'cities',
+  Favorite = 'favorites',
+  Room = 'near-places'
 }
 
-export enum HouseTypes {
-  Apartment = 'apartment',
-  Room = 'room',
-  House = 'house',
-  Hotel = 'hotel'
+export enum MapIconSize {
+  Width = 27,
+  Height = 39
 }
 
-export const IMG_MARKER_DEFAULT = 'img/pin.svg';
+export enum MapIconPosition {
+  X = 13.5,
+  Y = 39
+}
 
-export const IMG_MARKER_CURRENT = 'img/pin-active.svg';
+export enum RaitingValues {
+  MaxStars = 5,
+  MaxValue = 100
+}
 
-export enum TypeOffersSort {
-  Default = 'Popular',
+export enum CityType {
+  Paris = 'Paris',
+  Cologne = 'Cologne',
+  Brussels = 'Brussels',
+  Amsterdam = 'Amsterdam',
+  Hamburg = 'Hamburg',
+  Dusseldorf = 'Dusseldorf'
+}
+
+export enum SortType {
+  Popular = 'Popular',
   LowToHigh = 'Price: low to high',
   HighToLow = 'Price: high to low',
-  TopRated = 'Top rated first'
+  TopRated = 'Top rated first',
 }
-
-export const TypeOffersSortArray = [TypeOffersSort.Default, TypeOffersSort.LowToHigh, TypeOffersSort.HighToLow, TypeOffersSort.TopRated];
-
-export const CITIES = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'];
 
 export enum APIRoute {
   Offers = '/hotels',
-  Reviews = '/comments',
+  Comments = '/comments',
   Login = '/login',
   Logout = '/logout',
-  FavoriteOffers = '/favorite/',
-  FavoriteOffer = '/favorite/{hotelId}/{status}',
+  Favorite = '/favorite',
 }
 
-export const RATING_STARS = ['1', '2', '3', '4', '5'];
+export enum StatusCode {
+  BadRequest = 400,
+  Unauthorized = 401,
+  NotFound = 404
+}
 
 export enum NameSpace {
-  DataOffers = 'DATA_OFFERS',
-  DataComments = 'DATA_COMMENTS',
-  Sort = 'SORT',
+  Data = 'DATA',
   User = 'USER',
-  Offers = 'OFFERS',
+  AppAction = 'APP_ACTION'
 }
+
+export enum FavoriteStatus {
+  Favorite = 1,
+  NotFavorite = 0
+}
+
+export enum UpdateType {
+  CurrentOffer = 'CURRENT_OFFER',
+  Nearby = 'NEARBY'
+}
+
+export enum LengthComment {
+  Min = 50,
+  Max = 300
+}
+
+export const RatingData = [
+  {
+    title: 'perfect',
+    value: 5
+  },
+  {
+    title: 'good',
+    value: 4
+  },
+  {
+    title: 'not bad',
+    value: 3
+  },
+  {
+    title: 'badly',
+    value: 2
+  },
+  {
+    title: 'terribly',
+    value: 1
+  }
+];
+
+export const IMG_MARKER_DEFAULT = '../img/pin.svg';
+export const IMG_MARKER_CURRENT = '../img/pin-active.svg';
+export const INSTANCE_LAYER = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+export const LAYER_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+
+export const DATE_FORMAT = 'MMMM YYYY';
+
+export const TIMEOUT_ERROR = 2000;
+export const TIMEOUT_PASSWORD_ERROR = 3000;
+export const RE = /^(?=.*[A-Za-z])(?=.*[0-9]).{2,}$/;
+
+export const MAX_REVIEWS_COUNT = 10;
+
+export const MAX_RANDOM_CITY = 5;
+
+export const NEARBY_OFFERS_COUNT = 3;
+export const IMAGES_COUNT = 6;
+

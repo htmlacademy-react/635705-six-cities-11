@@ -1,7 +1,11 @@
-function LoadingScreen(): JSX.Element {
+import './load.css';
+
+function Load(): JSX.Element {
   return (
-    <p>Loading ...</p>
+    <div className='load'>
+      <h2 className='load__text'>The page is loading ...</h2>
+    </div>
   );
 }
 
-export default LoadingScreen;
+export default Load;

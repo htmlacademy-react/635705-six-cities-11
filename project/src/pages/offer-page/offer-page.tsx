@@ -1,120 +1,146 @@
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import Bookmark from '../../components/bookmark/bookmark';
-import Gallery from '../../components/gallery/gallery';
-import Header from '../../components/header/header';
-import Inside from '../../components/inside/inside';
-import OfferNearbyList from '../../components/offers-nearby-list/offers-nearby-list';
-import Mark from '../../components/mark/mark';
-import RatingStars from '../../components/rating-stars/ratind-stars';
-import Form from '../../components/form/form';
-import ReviewsList from '../../components/reviews-list/reviews-list';
-import Map from '../../components/map/map';
-import { Hotel } from '../../types/hotel';
-import { ucFirst } from '../../utils';
-import NotFoundPage from '../not-found-page/not-found-page';
-import useScrollToTop from '../../hooks/use-scroll-to-up/use-scroll-to-up';
-import { useAppSelector } from '../../hooks';
-import { getOffers } from '../../store/offers-data/selectors';
+import { useAppSelector, useAppDispatch } from '../../hooks/index';
+import { fetchCurrentOfferAction, fetchFavoriteOffersAction, fetchNearbyOffersAction, setFavoriteStatusAction } from '../../store/api-actions';
+import { getNearbyOffers, getOffer } from '../../store/offers-data/selectors';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
-import { AppRoute, AuthorizationStatus, MapСategory } from '../../const';
-import { useMemo } from 'react';
-
+import { convertRating } from '../../utils';
+import { PageType, AuthorizationStatus, FavoriteStatus, NEARBY_OFFERS_COUNT } from '../../const';
+import PlacesList from '../../components/places-list/places-list';
+import Header from '../../components/header/header';
+import Map from '../../components/map/map';
+import ReviewForm from '../../components/form/form';
+import ReviewsList from '../../components/reviews-list/reviews-list';
+import RoomItem from '../../components/room-item/room-item';
+import Gallery from '../../components/gallery/gallery';
 
 function OfferPage(): JSX.Element {
-  useScrollToTop();
-  const params = useParams();
-  const offersForCity = useAppSelector(getOffers);
-  const authorizationStatus = useAppSelector(getAuthorizationStatus);
-  const currentOffer = offersForCity.find((el) => el.id.toString() === params.id) as Hotel;
-  const { id, images, city, isFavorite, isPremium, title, rating, type, bedrooms, maxAdults, price, goods, host, description } = currentOffer;
-  const offersNearby = useMemo(() => offersForCity.filter((el) => el.id !== id), [id, offersForCity]);
+  const { id } = useParams();
+  const currentId = Number(id);
+  const offer = useAppSelector(getOffer);
+  const nearbyOffers = useAppSelector(getNearbyOffers);
+  let offersForMap;
+  const dispatch = useAppDispatch();
+  const isAuth = useAppSelector(getAuthorizationStatus) === AuthorizationStatus.Auth;
 
-  if (!currentOffer) {
-    return <NotFoundPage />;
+  const handleFavoriteButtonClick = () => {
+    dispatch(setFavoriteStatusAction({
+      currentId: currentId,
+      status: offer.isFavorite ? FavoriteStatus.NotFavorite : FavoriteStatus.Favorite
+    }));
+  };
+
+  if (offer !== null) {
+    offersForMap = nearbyOffers.slice(0, NEARBY_OFFERS_COUNT).concat(offer);
   }
+
+  useEffect(() => {
+    if (isAuth) {
+      dispatch(fetchFavoriteOffersAction());
+    }
+    if (offer === undefined || offer.id !== currentId) {
+      dispatch(fetchCurrentOfferAction(currentId));
+      dispatch(fetchNearbyOffersAction(currentId));
+    }
+  }, [currentId, dispatch, isAuth, offer]
+  );
+
   return (
     <div className="page">
       <Header />
       <main className="page__main page__main--property">
         <section className="property">
 
-          <Gallery images={images} />
+          <Gallery offer={offer} />
 
           <div className="property__container container">
             <div className="property__wrapper">
-
-              <Mark isPremium={isPremium} className={'property__mark'} />
-
+              {
+                offer?.isPremium &&
+                <div className="property__mark"><span>Premium</span></div>
+              }
               <div className="property__name-wrapper">
                 <h1 className="property__name">
-                  {title}
+                  {offer?.title}
                 </h1>
-
-                <Bookmark id={id} isFavorite={isFavorite} />
-
+                <button
+                  className={`property__bookmark-button ${offer?.isFavorite ? 'property__bookmark-button--active' : ''} button`}
+                  type="button"
+                  onClick={handleFavoriteButtonClick}
+                >
+                  <svg className="place-card__bookmark-icon" width="31" height="33">
+                    <use xlinkHref="#icon-bookmark"></use>
+                  </svg>
+                  <span className="visually-hidden">To bookmarks</span>
+                </button>
               </div>
               <div className="property__rating rating">
                 <div className="property__stars rating__stars">
-                  <RatingStars rating={rating} />
+                  <span style={{ width: `${offer ? convertRating(offer.rating) : '0'}%` }}></span>
+                  <span className="visually-hidden">Rating</span>
                 </div>
-                <span className="property__rating-value rating__value">{rating}</span>
+                <span className="property__rating-value rating__value">{offer?.rating}</span>
               </div>
               <ul className="property__features">
                 <li className="property__feature property__feature--entire">
-                  {ucFirst(type)}
+                  {offer ? offer?.type.charAt(0).toUpperCase() + offer?.type.slice(1) : ''}
                 </li>
                 <li className="property__feature property__feature--bedrooms">
-                  {bedrooms} Bedrooms
+                  {offer?.bedrooms} Bedrooms
                 </li>
                 <li className="property__feature property__feature--adults">
-                  Max {maxAdults} adults
+                  Max {offer?.maxAdults} adults
                 </li>
               </ul>
               <div className="property__price">
-                <b className="property__price-value">&euro;{price}</b>
+                <b className="property__price-value">&euro;{offer?.price}</b>
                 <span className="property__price-text">&nbsp;night</span>
               </div>
-              <Inside goods={goods} />
-
+              <div className="property__inside">
+                <h2 className="property__inside-title">What&apos;s inside</h2>
+                <ul className="property__inside-list">
+                  {
+                    offer?.goods.map((item) => <RoomItem key={item} roomItem={item} />)
+                  }
+                </ul>
+              </div>
               <div className="property__host">
                 <h2 className="property__host-title">Meet the host</h2>
                 <div className="property__host-user user">
                   <div className="property__avatar-wrapper property__avatar-wrapper--pro user__avatar-wrapper">
-                    <img className="property__avatar user__avatar" src={host.avatarUrl} width="74" height="74" alt="Host avatar" />
+                    <img className="property__avatar user__avatar" src={offer?.host.avatarUrl} width="74" height="74" alt="Host avatar" />
                   </div>
                   <span className="property__user-name">
-                    {host.name}
+                    {offer?.host.name}
                   </span>
-                  <span className="property__user-status">
-                    {host.isPro ? 'Pro' : ''}
-                  </span>
+                  {offer?.host.isPro && <span className="property__user-status">Pro</span>}
                 </div>
                 <div className="property__description">
-                  <p className="property__text">
-                    {description}
-                  </p>
+                  {offer?.description}
                 </div>
               </div>
               <section className="property__reviews reviews">
-                <ReviewsList />
-
-                {authorizationStatus === AuthorizationStatus.Auth && <Form offerID={id} />}
-
+                <ReviewsList id={currentId} />
+                {
+                  isAuth && <ReviewForm id={currentId} />
+                }
               </section>
             </div>
           </div>
-          <section className="property__map">
-            <Map city={city} offers={offersForCity} className={MapСategory.Property} />
+          <section className="property__map map">
+            {
+              offersForMap && offer ? <Map offers={offersForMap} activeCard={offer} city={offersForMap[0].city} /> : ''
+            }
           </section>
         </section>
         <div className="container">
           <section className="near-places places">
-            <h2 className="near-places__title">Other places in the neighbourhood</h2>
-            <OfferNearbyList
-              offersList={offersNearby}
-              pageType={AppRoute.Room}
-              cityName={city.name}
-            />
+            <h2 className="near-places__title">{nearbyOffers.length !== 0 ? 'Other places in the neighbourhood' : 'There are no neighbourhood offers'}</h2>
+            <div className="near-places__list places__list">
+              {
+                nearbyOffers ? <PlacesList offers={nearbyOffers} pageType={PageType.Room} /> : ''
+              }
+            </div>
           </section>
         </div>
       </main>

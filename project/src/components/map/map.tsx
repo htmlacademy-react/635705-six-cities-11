@@ -1,35 +1,35 @@
 import { memo, useEffect, useRef } from 'react';
-import { Icon, Marker } from 'leaflet';
+import L, { Icon, Marker } from 'leaflet';
 import { isEqual } from 'lodash';
-import { Hotel, LocationType, CityType } from '../../types/hotel';
-import { IMG_MARKER_DEFAULT, IMG_MARKER_CURRENT } from '../../const';
+import useMap from '../../hooks/useMap/useMap';
 import 'leaflet/dist/leaflet.css';
-import useMap from '../../hooks/use-map/use-map';
+import { Hotel, City } from '../../types/hotel';
+import { IMG_MARKER_DEFAULT, IMG_MARKER_CURRENT, MapIconSize, MapIconPosition } from '../../const';
 
 type MapProps = {
-  city: CityType;
+  city: City;
   offers: Hotel[];
-  selectedPoint?: LocationType | null;
-  className: string;
-};
+  activeCard?: Hotel | undefined;
+}
 
 const defaultCustomIcon = new Icon({
   iconUrl: IMG_MARKER_DEFAULT,
-  iconSize: [27, 39],
-  iconAnchor: [13.5, 39]
+  iconSize: [MapIconSize.Width, MapIconSize.Height],
+  iconAnchor: [MapIconPosition.X, MapIconPosition.Y]
 });
 
 const currentCustomIcon = new Icon({
   iconUrl: IMG_MARKER_CURRENT,
-  iconSize: [27, 39],
-  iconAnchor: [13.5, 39]
+  iconSize: [MapIconSize.Width, MapIconSize.Height],
+  iconAnchor: [MapIconPosition.X, MapIconPosition.Y]
 });
 
-function Map({ city, offers, selectedPoint, className }: MapProps): JSX.Element {
+function Map({ city, offers, activeCard }: MapProps): JSX.Element {
   const mapRef = useRef(null);
   const map = useMap(mapRef, city);
 
   useEffect(() => {
+    const layerGroup = L.layerGroup([]);
     if (map) {
       offers.forEach((point) => {
         const marker = new Marker({
@@ -39,30 +39,23 @@ function Map({ city, offers, selectedPoint, className }: MapProps): JSX.Element 
 
         marker
           .setIcon(
-            selectedPoint !== undefined && isEqual(point.location, selectedPoint)
+            activeCard !== undefined && isEqual(activeCard, point)
               ? currentCustomIcon
               : defaultCustomIcon
-          )
-          .addTo(map);
+          );
+        layerGroup.addLayer(marker);
       });
+      layerGroup.addTo(map);
     }
-  }, [map, offers, selectedPoint]);
 
-  useEffect(() => {
-    if (map) {
-      map.setView({
-        lat: city.location.latitude,
-        lng: city.location.longitude
-      }, city.location.zoom);
-    }
-  }, [map, city]);
+    return () => {
+      map?.removeLayer(layerGroup);
+    };
+
+  }, [offers, activeCard, map]);
 
   return (
-    <section
-      className={`map ${className}`}
-      ref={mapRef}
-    >
-    </section>
+    <div style={{ height: '100%' }} ref={mapRef}></div>
   );
 }
 
