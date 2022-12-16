@@ -1,66 +1,95 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { NameSpace } from '../../const';
-import { OffersData } from '../../types/state';
-import { Hotel } from '../../types/hotel';
-import { changeFavoriteOfferAction, fetchOffersAction } from '../api-actions';
+import { DataProcess } from '../../types/state';
+import { removeOffer } from '../../utils';
+import { updateCurrentOffer, updateFavoriteOffers, updateNearbyOffers, updateOffers } from '../action';
+import { fetchCommentsAction, fetchCurrentOfferAction, fetchFavoriteOffersAction, fetchNearbyOffersAction, fetchOffersAction, setCommentAction } from '../api-actions';
 
-const initialState: OffersData = {
-  allOffers: [],
-  isOffersDataLoading: false,
-  hasError: false,
-  selectedCityName: 'Paris',
+const initialState: DataProcess = {
+  currentOffer: undefined,
   offers: [],
-  offersNotSort: [],
-  selectedPoint: null,
-  offersFavotiteList: [],
+  favoriteOffers: [],
+  nearbyOffers: [],
+  comments: [],
+  loadedState: {
+    isCurrentOfferLoading: false,
+    isOffersDataLoading: false,
+    isOffersLoaded: false,
+    isFavoritesLoaded: false,
+    isNearbyLoaded: false,
+    isCommentLoading: false,
+    isCommentLoadSuccess: false,
+  },
 };
 
-
 export const offersData = createSlice({
-  name: NameSpace.DataOffers,
+  name: NameSpace.Data,
   initialState,
-  reducers: {
-    changeCity: (state, action: PayloadAction<{ currentCity: string }>) => {
-      state.selectedCityName = action.payload.currentCity;
-      state.offers = state.allOffers.filter((el) => el.city.name === action.payload.currentCity);
-    },
-    getCurrentPoint: (state, action: PayloadAction<{ offer: Hotel; isAction: boolean }>) => {
-      const { offer, isAction } = action.payload;
-      state.selectedPoint = isAction ? offer.location : null;
-    },
-    changeFavoriteStatus: (state, action: PayloadAction<{ hotelId: number; isFavorite: boolean }>) => {
-      const currentOffer = state.offers.find((offer) => offer.id === action.payload.hotelId);
-
-      if (currentOffer) {
-        currentOffer.isFavorite = action.payload.isFavorite;
-      }
-    },
-  },
+  reducers: {},
   extraReducers(builder) {
     builder
       .addCase(fetchOffersAction.pending, (state) => {
-        state.isOffersDataLoading = true;
-        state.hasError = false;
+        state.loadedState.isOffersDataLoading = true;
       })
       .addCase(fetchOffersAction.fulfilled, (state, action) => {
-        state.allOffers = action.payload;
-        state.offers = state.allOffers.filter((el) => el.city.name === state.selectedCityName);
-        state.isOffersDataLoading = false;
+        state.offers = action.payload;
+        state.loadedState.isOffersDataLoading = false;
+        state.loadedState.isOffersLoaded = true;
       })
-      .addCase(fetchOffersAction.rejected, (state) => {
-        state.isOffersDataLoading = false;
-        state.hasError = true;
+      .addCase(fetchFavoriteOffersAction.fulfilled, (state, action) => {
+        state.favoriteOffers = action.payload;
+        state.loadedState.isFavoritesLoaded = true;
       })
-      .addCase(changeFavoriteOfferAction.fulfilled, (state, action) => {
-        const currentOfferIndex = state.offersFavotiteList.findIndex((offer) => offer.id === action.payload.id);
-        if (currentOfferIndex > -1) {
-          state.offersFavotiteList[currentOfferIndex] = action.payload;
-          state.offersFavotiteList = state.offersFavotiteList.filter((offer) => offer.isFavorite);
-        } else {
-          state.offersFavotiteList.push(action.payload);
+      .addCase(fetchNearbyOffersAction.fulfilled, (state, action) => {
+        state.nearbyOffers = action.payload;
+        state.loadedState.isNearbyLoaded = true;
+      })
+      .addCase(fetchCurrentOfferAction.pending, (state) => {
+        state.loadedState.isCurrentOfferLoading = true;
+      })
+      .addCase(fetchCurrentOfferAction.fulfilled, (state, action) => {
+        state.currentOffer = action.payload;
+        state.loadedState.isCurrentOfferLoading = false;
+      })
+      .addCase(fetchCommentsAction.fulfilled, (state, action) => {
+        state.comments = action.payload;
+      })
+      .addCase(updateOffers, (state, action) => {
+        if (state.offers !== undefined && state.loadedState.isOffersLoaded) {
+          state.offers = removeOffer(state.offers, action.payload);
         }
+      })
+      .addCase(updateFavoriteOffers, (state, action) => {
+        if (state.loadedState.isFavoritesLoaded) {
+          if (action.payload.isFavorite === true) {
+            state.favoriteOffers = [...state.favoriteOffers, action.payload];
+          } else {
+            state.favoriteOffers = state.favoriteOffers.filter((offer) => offer.id !== action.payload.id);
+          }
+        }
+      })
+      .addCase(updateNearbyOffers, (state, action) => {
+        if (state.loadedState.isNearbyLoaded && state.nearbyOffers.some((item) => item.id === action.payload.id)) {
+          state.nearbyOffers = removeOffer(state.nearbyOffers, action.payload);
+        }
+      })
+      .addCase(updateCurrentOffer, (state, action) => {
+        if (state.currentOffer !== undefined && state.currentOffer.id === action.payload.id) {
+          state.currentOffer = action.payload;
+        }
+      })
+      .addCase(setCommentAction.pending, (state) => {
+        state.loadedState.isCommentLoading = true;
+        state.loadedState.isCommentLoadSuccess = false;
+      })
+      .addCase(setCommentAction.fulfilled, (state, action) => {
+        state.comments = action.payload;
+        state.loadedState.isCommentLoading = false;
+        state.loadedState.isCommentLoadSuccess = true;
+      })
+      .addCase(setCommentAction.rejected, (state) => {
+        state.loadedState.isCommentLoading = false;
+        state.loadedState.isCommentLoadSuccess = false;
       });
   }
 });
-
-export const { changeCity, getCurrentPoint, changeFavoriteStatus } = offersData.actions;

@@ -1,18 +1,15 @@
 import { NameSpace } from '../../const';
+import { Hotel } from '../../types/hotel';
+import { Review } from '../../types/comments';
 import { State } from '../../types/state';
-import { Hotel, LocationType } from '../../types/hotel';
-import { createSelector } from '@reduxjs/toolkit';
 
-export const getAllOffers = (state: State): Hotel[] => state[NameSpace.DataOffers].allOffers;
-export const getOffersDataLoadingStatus = (state: State): boolean => state[NameSpace.DataOffers].isOffersDataLoading;
-export const getErrorStatus = (state: State): boolean => state[NameSpace.DataOffers].hasError;
+const getOffer = (state: State): Hotel => state[NameSpace.Data].currentOffer as Hotel;
+const getOffers = (state: State): Hotel[] => state[NameSpace.Data].offers as Hotel[];
+const getOffersDataLoadingStatus = (state: State): boolean => state[NameSpace.Data].loadedState.isOffersDataLoading;
+const getOffersFavotiteList = (state: State): Hotel[] => state[NameSpace.Data].favoriteOffers;
+const getNearbyOffers = (state: State): Hotel[] => state[NameSpace.Data].nearbyOffers;
+const getComments = (state: State): Review[] => state[NameSpace.Data].comments;
+const getIsCommentLoading = (state: State): boolean => state[NameSpace.Data].loadedState.isCommentLoading;
+const getIsCommentLoadSuccess = (state: State): boolean => state[NameSpace.Data].loadedState.isCommentLoadSuccess;
 
-export const getSelectedCityName = (state: State): string => state[NameSpace.DataOffers].selectedCityName;
-export const getOffers = (state: State): Hotel[] => state[NameSpace.DataOffers].offers;
-export const getSelectedPoint = (state: State): LocationType | null => state[NameSpace.DataOffers].selectedPoint;
-
-
-export const getOffersFavotiteList = createSelector(
-  [getAllOffers],
-  (allOffers) => allOffers.filter((offer) => offer.isFavorite)
-);
+export { getOffer, getOffers, getOffersDataLoadingStatus, getOffersFavotiteList, getNearbyOffers, getComments, getIsCommentLoading, getIsCommentLoadSuccess };

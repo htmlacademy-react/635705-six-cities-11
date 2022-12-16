@@ -1,24 +1,19 @@
-export type UserCommentType = {
-  avatarUrl: string;
-  id: number;
-  isPro: boolean;
-  name: string;
-}
-export type CommentType = {
+import { User } from './hotel';
+
+export type Review = {
   comment: string;
   date: string;
   id: number;
   rating: number;
-  user: UserCommentType;
+  user: User;
 }
 
-export type CommentsOffersType = {
-  offerID: number;
-  commentsByOffer: CommentType[];
-}
-
-export type CommentSendType = {
+export type FormData = {
   comment: string;
-  rating: number;
-  offerID: number;
+  rating: number | null;
+}
+
+export type ReviewData = {
+  id: number;
+  formData: FormData;
 }

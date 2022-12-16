@@ -4,56 +4,61 @@ import Header from '../../components/header/header';
 import CitiesPlacesEmpty from '../../components/cities-places-empty/cities-places-empty';
 import useScrollToTop from '../../hooks/use-scroll-to-up/use-scroll-to-up';
 import { Hotel } from '../../types/hotel';
-import { useAppSelector } from '../../hooks';
-import { getOffers, getSelectedCityName, getSelectedPoint } from '../../store/offers-data/selectors';
-import { getAllOffers } from '../../store/offers-data/selectors';
+import { useAppSelector, useAppDispatch } from '../../hooks';
+import { useState, useCallback, useMemo } from 'react';
+import { PageType, SortType } from '../../const';
+import { getCity } from '../../store/app-action-process/selectors';
+import { getOffers } from '../../store/offers-data/selectors';
+import { selectCity } from '../../store/action';
 import PlacesSorting from '../../components/places-sorting/places-sorting';
 import Tabs from '../../components/tabs/tabs';
-import { AppRoute, MapСategory } from '../../const';
 
 function MainPage(): JSX.Element {
   useScrollToTop();
-  const allOffers: Hotel[] = useAppSelector(getAllOffers);
-  const currentCity = useAppSelector(getSelectedCityName);
-  const offersForCity = useAppSelector(getOffers);
-  const selectedPoint = useAppSelector(getSelectedPoint);
+  const offers = useAppSelector(getOffers);
+  const dispatch = useAppDispatch();
+  const [activeCard, setActiveCard] = useState<Hotel | undefined>(undefined);
+  const [activeSortItem, setActiveSortItem] = useState<string>(SortType.Popular);
+  const currentCity = useAppSelector(getCity);
+  const currentOffers = useMemo(() => offers.filter((offer) => offer.city.name === currentCity), [offers, currentCity]);
+  const isEmpty = currentOffers.length === 0;
 
-  const offersForCurrentCity = allOffers.filter((offer) => offer.city.name === currentCity);
-  const offersCountForCity = offersForCurrentCity ? offersForCurrentCity.length : 0;
-
-  if (!allOffers) {
-    return <CitiesPlacesEmpty />;
-  }
+  const setCity = useCallback((cityItem: string) => dispatch(selectCity(cityItem)), [dispatch]);
 
   return (
     <div className="page page--gray page--main">
       <Header />
-      <main className={`page__main page__main--index ${offersCountForCity === 0 ? 'page__main--index-empty' : ''}`}>
+      <main className={`page__main page__main--index ${isEmpty ? 'page__main--index-empty' : ''}`}>
         <h1 className="visually-hidden">Cities</h1>
-        <Tabs cityName={currentCity} />
+        <Tabs selectedCity={currentCity} setCity={setCity} />
         <div className="cities">
-          <div className={`cities__places-container ${offersCountForCity === 0 ? 'cities__places-container--empty' : ''} container`}>
-            {offersCountForCity !== 0
-              ? (
+          {
+            isEmpty ? < CitiesPlacesEmpty city={currentCity} /> :
+              <div className="cities__places-container container">
                 <section className="cities__places places">
                   <h2 className="visually-hidden">Places</h2>
-                  <b className="places__found">{offersForCity.length} places to stay in {currentCity}</b>
-                  <PlacesSorting />
+                  <b className="places__found">{currentOffers.length} places to stay in {currentCity}</b>
+                  <PlacesSorting activeSortItem={activeSortItem} setActiveSortItem={setActiveSortItem} />
                   <PlacesList
-                    pageType={AppRoute.Main}
+                    offers={currentOffers}
+                    activeSortItem={activeSortItem}
+                    setActiveCard={setActiveCard}
+                    pageType={PageType.Main}
                   />
-                </section>)
-              : <CitiesPlacesEmpty />}
-            <div className="cities__right-section">
-              {offersCountForCity !== 0 && (
-                <Map
-                  city={offersForCity[0].city}
-                  offers={offersForCity}
-                  selectedPoint={selectedPoint}
-                  className={MapСategory.Cities}
-                />)}
-            </div>
-          </div>
+                </section>
+                <div className="cities__right-section">
+                  <section className="cities__map map">
+                    {currentOffers[0].city && (
+                      <Map
+                        city={currentOffers[0].city}
+                        offers={currentOffers}
+                        activeCard={activeCard}
+                      />
+                    )}
+                  </section>
+                </div>
+              </div>
+          }
         </div>
       </main>
     </div>

@@ -1,30 +1,32 @@
-export type HostType = {
+export type Location = {
+  latitude: number;
+  longitude: number;
+  zoom: number;
+}
+
+export type City = {
+  location: Location;
+  name: string;
+}
+
+export type User = {
   avatarUrl: string;
   id: number;
   isPro: boolean;
   name: string;
 }
-export type LocationType = {
-  latitude: number;
-  longitude: number;
-  zoom: number;
-};
-export type CityType = {
-  location: LocationType;
-  name: string;
-};
 
 export type Hotel = {
-  id: number;
   bedrooms: number;
-  city: CityType;
+  city: City;
   description: string;
   goods: string[];
-  host: HostType;
+  host: User;
+  id: number;
   images: string[];
   isFavorite: boolean;
   isPremium: boolean;
-  location: LocationType;
+  location: Location;
   maxAdults: number;
   previewImage: string;
   price: number;
@@ -32,3 +34,4 @@ export type Hotel = {
   title: string;
   type: string;
 };
+
